@@ -1,6 +1,6 @@
-const { v4: uuid } = require('uuid');
+import { v4 as uuid } from 'uuid';
 
-exports.seed = async function (knex) {
+export async function seed(knex) {
   await knex('work_diary').del();
 
   const student = await knex('user').where('role', 'student').first();
@@ -15,4 +15,4 @@ exports.seed = async function (knex) {
       status: 'submitted',
     },
   ]);
-};
+}

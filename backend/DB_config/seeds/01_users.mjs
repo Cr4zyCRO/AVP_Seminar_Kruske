@@ -1,6 +1,6 @@
-const { v4: uuid } = require('uuid');
+import { v4 as uuid } from 'uuid';
 
-exports.seed = async function (knex) {
+export async function seed(knex) {
   await knex('user').del();
 
   await knex('user').insert([
@@ -45,4 +45,4 @@ exports.seed = async function (knex) {
       oib: '12345678903',
     },
   ]);
-};
+}

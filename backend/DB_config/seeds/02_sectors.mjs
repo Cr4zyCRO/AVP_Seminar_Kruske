@@ -1,6 +1,6 @@
-const { v4: uuid } = require('uuid');
+import { v4 as uuid } from 'uuid';
 
-exports.seed = async function (knex) {
+export async function seed(knex) {
   await knex('sector').del();
 
   await knex('sector').insert([
@@ -25,4 +25,4 @@ exports.seed = async function (knex) {
       sector_name: 'Trade and Tourism Management',
     },
   ]);
-};
+}
