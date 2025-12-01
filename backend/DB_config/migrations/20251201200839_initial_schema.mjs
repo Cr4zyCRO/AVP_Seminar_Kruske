@@ -1,8 +1,9 @@
 /**
- * Knex migration to create full internship/practice schema
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> }
  */
-
-exports.up = async function (knex) {
+export const up = async (knex) => {
+  const isSQLite = knex.client.config.client === 'sqlite3';
   // =========================
   // user
   // =========================
@@ -17,11 +18,7 @@ exports.up = async function (knex) {
     table.string('oib').notNullable().unique();
 
     table.timestamp('is_created').defaultTo(knex.fn.now());
-    table
-      .timestamp('is_updated')
-      .defaultTo(knex.fn.now())
-      .alter()
-      .onUpdate(knex.fn.now());
+    table.timestamp('is_updated').defaultTo(knex.fn.now()); //.onUpdate(knex.fn.now());
   });
 
   // =========================
@@ -31,11 +28,7 @@ exports.up = async function (knex) {
     table.uuid('id').primary();
     table.string('sector_name', 255).notNullable().unique();
     table.timestamp('is_created').defaultTo(knex.fn.now());
-    table
-      .timestamp('is_updated')
-      .defaultTo(knex.fn.now())
-      .alter()
-      .onUpdate(knex.fn.now());
+    table.timestamp('is_updated').defaultTo(knex.fn.now()); //.onUpdate(knex.fn.now());
   });
 
   // =========================
@@ -47,15 +40,11 @@ exports.up = async function (knex) {
     table.string('address', 255);
     table.string('city', 108);
     table.string('email', 255).notNullable().unique();
-    table.string('owner_id', 255).notNullable();
+    table.uuid('owner_id').notNullable();
     table.uuid('sector_id').notNullable();
 
     table.timestamp('is_created').defaultTo(knex.fn.now());
-    table
-      .timestamp('is_updated')
-      .defaultTo(knex.fn.now())
-      .alter()
-      .onUpdate(knex.fn.now());
+    table.timestamp('is_updated').defaultTo(knex.fn.now()); //.onUpdate(knex.fn.now());
 
     table.foreign('sector_id').references('sector.id').onDelete('CASCADE');
     table.foreign('owner_id').references('user.id').onDelete('CASCADE');
@@ -76,11 +65,7 @@ exports.up = async function (knex) {
     table.string('status').defaultTo('submitted');
 
     table.timestamp('is_created').defaultTo(knex.fn.now());
-    table
-      .timestamp('is_updated')
-      .defaultTo(knex.fn.now())
-      .alter()
-      .onUpdate(knex.fn.now());
+    table.timestamp('is_updated').defaultTo(knex.fn.now()); //.onUpdate(knex.fn.now());
 
     table.foreign('student_id').references('user.id').onDelete('CASCADE');
 
@@ -111,11 +96,7 @@ exports.up = async function (knex) {
     table.string('status', 50);
 
     table.timestamp('is_created').defaultTo(knex.fn.now());
-    table
-      .timestamp('is_updated')
-      .defaultTo(knex.fn.now())
-      .alter()
-      .onUpdate(knex.fn.now());
+    table.timestamp('is_updated').defaultTo(knex.fn.now()); //.onUpdate(knex.fn.now());
 
     table.foreign('student_id').references('user.id').onDelete('CASCADE');
 
@@ -137,11 +118,7 @@ exports.up = async function (knex) {
     table.string('status', 50).notNullable();
 
     table.timestamp('is_created').defaultTo(knex.fn.now());
-    table
-      .timestamp('is_updated')
-      .defaultTo(knex.fn.now())
-      .alter()
-      .onUpdate(knex.fn.now());
+    table.timestamp('is_updated').defaultTo(knex.fn.now()); //.onUpdate(knex.fn.now());
 
     table.foreign('student_id').references('user.id').onDelete('CASCADE');
     table
@@ -165,11 +142,7 @@ exports.up = async function (knex) {
     table.string('final_grade', 10);
 
     table.timestamp('is_created').defaultTo(knex.fn.now());
-    table
-      .timestamp('is_updated')
-      .defaultTo(knex.fn.now())
-      .alter()
-      .onUpdate(knex.fn.now());
+    table.timestamp('is_updated').defaultTo(knex.fn.now()); //.onUpdate(knex.fn.now());
 
     table
       .foreign('application_id')
@@ -185,7 +158,11 @@ exports.up = async function (knex) {
   });
 };
 
-exports.down = async function (knex) {
+/**
+ * @param { import("knex").Knex } knex
+ * @returns { Promise<void> }
+ */
+export const down = async (knex) => {
   await knex.schema.dropTableIfExists('practice_report');
   await knex.schema.dropTableIfExists('work_diary');
   await knex.schema.dropTableIfExists('certificate');

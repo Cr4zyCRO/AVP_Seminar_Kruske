@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 
-exports.seed = async function (knex) {
+export async function seed(knex) {
   await knex('certificate').del();
 
   const student = await knex('user').where('role', 'student').first();
@@ -16,4 +16,4 @@ exports.seed = async function (knex) {
       status: 'draft',
     },
   ]);
-};
+}
