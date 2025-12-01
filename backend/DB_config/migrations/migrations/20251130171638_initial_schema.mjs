@@ -17,7 +17,11 @@ exports.up = async function (knex) {
     table.string('oib').notNullable().unique();
 
     table.timestamp('is_created').defaultTo(knex.fn.now());
-    table.timestamp('is_updated').defaultTo(knex.fn.now());
+    table
+      .timestamp('is_updated')
+      .defaultTo(knex.fn.now())
+      .alter()
+      .onUpdate(knex.fn.now());
   });
 
   // =========================
@@ -27,7 +31,11 @@ exports.up = async function (knex) {
     table.uuid('id').primary();
     table.string('sector_name', 255).notNullable().unique();
     table.timestamp('is_created').defaultTo(knex.fn.now());
-    table.timestamp('is_updated').defaultTo(knex.fn.now());
+    table
+      .timestamp('is_updated')
+      .defaultTo(knex.fn.now())
+      .alter()
+      .onUpdate(knex.fn.now());
   });
 
   // =========================
@@ -43,7 +51,11 @@ exports.up = async function (knex) {
     table.uuid('sector_id').notNullable();
 
     table.timestamp('is_created').defaultTo(knex.fn.now());
-    table.timestamp('is_updated').defaultTo(knex.fn.now());
+    table
+      .timestamp('is_updated')
+      .defaultTo(knex.fn.now())
+      .alter()
+      .onUpdate(knex.fn.now());
 
     table.foreign('sector_id').references('sector.id').onDelete('CASCADE');
     table.foreign('owner_id').references('user.id').onDelete('CASCADE');
@@ -60,11 +72,15 @@ exports.up = async function (knex) {
     table.uuid('faculty_mentor_id').notNullable();
 
     table.text('uputnica_file');
-    table.string('uptnica_status', 50).notNullable();
-    table.string('status');
+    table.string('uptnica_status', 50).defaultTo('pending');
+    table.string('status').defaultTo('submitted');
 
     table.timestamp('is_created').defaultTo(knex.fn.now());
-    table.timestamp('is_updated').defaultTo(knex.fn.now());
+    table
+      .timestamp('is_updated')
+      .defaultTo(knex.fn.now())
+      .alter()
+      .onUpdate(knex.fn.now());
 
     table.foreign('student_id').references('user.id').onDelete('CASCADE');
 
@@ -95,7 +111,11 @@ exports.up = async function (knex) {
     table.string('status', 50);
 
     table.timestamp('is_created').defaultTo(knex.fn.now());
-    table.timestamp('is_updated').defaultTo(knex.fn.now());
+    table
+      .timestamp('is_updated')
+      .defaultTo(knex.fn.now())
+      .alter()
+      .onUpdate(knex.fn.now());
 
     table.foreign('student_id').references('user.id').onDelete('CASCADE');
 
@@ -117,7 +137,11 @@ exports.up = async function (knex) {
     table.string('status', 50).notNullable();
 
     table.timestamp('is_created').defaultTo(knex.fn.now());
-    table.timestamp('is_updated').defaultTo(knex.fn.now());
+    table
+      .timestamp('is_updated')
+      .defaultTo(knex.fn.now())
+      .alter()
+      .onUpdate(knex.fn.now());
 
     table.foreign('student_id').references('user.id').onDelete('CASCADE');
     table
@@ -141,7 +165,11 @@ exports.up = async function (knex) {
     table.string('final_grade', 10);
 
     table.timestamp('is_created').defaultTo(knex.fn.now());
-    table.timestamp('is_updated').defaultTo(knex.fn.now());
+    table
+      .timestamp('is_updated')
+      .defaultTo(knex.fn.now())
+      .alter()
+      .onUpdate(knex.fn.now());
 
     table
       .foreign('application_id')
