@@ -11,6 +11,8 @@ console.log(__dirname + '\n' + path.resolve(__dirname, './migrations'));
 // Load .env explicitly from backend folder
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
 
+console.log('DB_PASSWORD u Knexu:', process.env.DB_PASSWORD); // <-- DODAJTE OVO
+
 export const development = {
   client: 'sqlite3',
   connection: {

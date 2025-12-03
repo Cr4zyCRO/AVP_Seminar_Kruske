@@ -1,0 +1,21 @@
+services:
+  backend:
+    build: .   # backend se pokrice priko Dockerfile
+              #  unutar trenutnog dir
+    ports:
+      - '5001:5000'  # pc komunicira s kontejneron
+
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: my_secret
+      POSTGRES_DB: sceduly_db
+    ports:
+      - '5434:5432' # <--- NOVO MAPIRANJE PORTA: Host 5433 -> Kontejner 5432
+    volumes:  # data ce bit fizicka lokacija volume-a ispod
+      - sceduly_db_data:/var/lib/postgresql
+
+volumes:  # radi 'postgres_data'
+  sceduly_db_data: 
+
