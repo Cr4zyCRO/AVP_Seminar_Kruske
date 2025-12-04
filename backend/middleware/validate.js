@@ -1,4 +1,4 @@
-const Joi = require("joi");
+import Joi from "joi";
 
 const validate = (section) => (objSchema) => {
   const validationSchema = Joi.object(objSchema);
@@ -6,19 +6,16 @@ const validate = (section) => (objSchema) => {
   return async (req, res, next) => {
     try {
       await validationSchema.validateAsync(req[section]);
-      next(); 
+      next();
     } catch (err) {
-
       res.status(400).json({
         error: "Validation error",
-        details: err.details.map((detail) => detail.message), 
+        details: err.details.map((detail) => detail.message),
       });
     }
   };
 };
 
-module.exports = {
-  body: validate("body"),
-  params: validate("params"), 
-  query: validate("query"),
-};
+export const body = validate("body");
+export const params = validate("params");
+export const query = validate("query");

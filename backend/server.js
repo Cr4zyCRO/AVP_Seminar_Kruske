@@ -1,7 +1,13 @@
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import { jwtCheck, authorizeAdmin, authorizeFaculty } from "./middleware/authMiddleware.js";
+import {
+  jwtCheck,
+  authorizeAdmin,
+  authorizeFaculty,
+} from "./middleware/authMiddleware.js";
+import usersRouter from "./route/users.js";
+import AuthRouter from "./route/auth.js";
 
 //run npm start:dev
 
@@ -18,11 +24,9 @@ app.get("/protected", jwtCheck, (req, res) => {
   res.send(`Hello, user with ID: ${req.user.id}`);
 });
 
-
 app.get("/admin", authorizeAdmin, (req, res) => {
   res.send("Hello, admin!");
 });
-
 
 app.get("/admin", jwtCheck, authorizeFaculty, (req, res) => {
   res.send("Hello, faculty!");
@@ -39,6 +43,9 @@ app.use((err, req, res, next) => {
 app.get("/", (req, res) => {
   res.send("Hello from backend!");
 });
+
+app.use("/users", usersRouter);
+app.use("/auth", AuthRouter);
 
 const PORT = process.env.PORT || 5000; //process.env je npr. komanda: PORT=3000 node server.js
 app.listen(PORT, () => console.log("Server running on port " + PORT));
