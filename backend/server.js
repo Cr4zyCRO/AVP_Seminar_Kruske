@@ -8,6 +8,7 @@ import {
 } from "./middleware/authMiddleware.js";
 import usersRouter from "./route/users.js";
 import AuthRouter from "./route/auth.js";
+import companiesRouter from "./route/companies.js";
 
 //run npm start:dev
 
@@ -46,6 +47,7 @@ app.get("/", (req, res) => {
 
 app.use("/users", usersRouter);
 app.use("/auth", AuthRouter);
+app.use("/companies", companiesRouter);
 
 const PORT = process.env.PORT || 5000; //process.env je npr. komanda: PORT=3000 node server.js
 app.listen(PORT, () => console.log("Server running on port " + PORT));

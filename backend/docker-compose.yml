@@ -4,6 +4,17 @@ services:
               #  unutar trenutnog dir
     ports:
       - '5001:5000'  # pc komunicira s kontejneron
+    environment:
+      - NODE_ENV=staging      # KRITIČNO: Kaže Knexu da koristi PostgreSQL
+      - DB_HOST=db            # KRITIČNO: Adresa baze unutar Docker mreže
+      - DB_PORT=5432
+      - DB_USER=postgres
+      - DB_PASSWORD=my_secret
+      - DB_NAME=sceduly_db
+      - JWT_SECRET=neki_secret
+
+    
+    
 
   db:
     image: postgres:latest
@@ -12,7 +23,7 @@ services:
       POSTGRES_PASSWORD: my_secret
       POSTGRES_DB: sceduly_db
     ports:
-      - '5434:5432' # <--- NOVO MAPIRANJE PORTA: Host 5433 -> Kontejner 5432
+      - '5434:5432' # <--- NOVO MAPIRANJE PORTA: Host 5434 -> Kontejner 5432
     volumes:  # data ce bit fizicka lokacija volume-a ispod
       - sceduly_db_data:/var/lib/postgresql
 
