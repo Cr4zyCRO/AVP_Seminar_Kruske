@@ -2,6 +2,9 @@ import express from "express";
 import Joi from "joi";
 import { loginUser } from "../repo/auth.js";
 import { body } from "../middleware/validate.js";
+import redisClient from "../config/redisClient.js";
+import { jwtCheck } from "../middleware/authMiddleware.js";
+import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
@@ -23,5 +26,41 @@ router.post(
     }
   }
 );
+
+router.post("/logout", jwtCheck, (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ error: "Authorization header missing" });
+  }
+
+  console.error("logout sometihg.");
+
+  const token = authHeader.split(" ")[1];
+  if (!token) {
+    return res.status(401).json({ error: "Bearer token missing" });
+  }
+
+  try {
+    const decoded = jwt.decode(token); // Decode the token to get its expiration time
+    const expiresIn = decoded.exp - Math.floor(Date.now() / 1000);
+
+    // Add the token to Redis with an expiration time
+    redisClient
+      .set(token, "blacklisted", { EX: expiresIn })
+      .then(() => {
+        res.json({
+          success: true,
+          message: "Logged out successfully",
+        });
+      })
+      .catch((err) => {
+        console.error("Redis error:", err);
+        res.status(500).json({ error: "Failed to blacklist token" });
+      });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: "Invalid token" });
+  }
+});
 
 export default router;

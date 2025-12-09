@@ -24,7 +24,6 @@ export default function LoginForm() {
 
       localStorage.setItem("token", data.token);
 
-      // Redirect based on role
       switch (data.user.role) {
         case "admin":
           window.location.href = "/admin";

@@ -15,7 +15,7 @@ function App() {
 
   return (
     <div>
-      {user ? <Dashboard user={user} /> : <LoginForm />}
+      {user ? <Dashboard user={user} onLogout={() => setUser(null)} /> : <LoginForm />}
     </div>
   );
 }

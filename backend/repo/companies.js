@@ -1,19 +1,13 @@
-//import db from "../DB_config/knex.js"; 
-
-//export async function getAllCompanies() {
-//  return db("company").select("*");
-//}
-
 import db from "../DB_config/knex.js";
 
 /**
  * Dohvaca paginiranu listu kompanija.
- * PRILAGOĐENO: Privremeno uklonjen filter 'is_active' jer polje ne postoji u bazi.
- * PRILAGOĐENO: Sortiranje se vrši po 'company_oib' umjesto 'name' za 'sortBy=name'.
- * @param {object} params - Parametri za upit.
- * @param {number} params.page - Trenutna stranica (default 1).
- * @param {number} params.limit - Broj rezultata po stranici (default 10).
- * @param {string} params.sortBy - Polje za sortiranje (trenutno podrzava 'name').
+ 
+  Sortiranje se vrsi po 'company_oib' umjesto 'name' za 'sortBy=name'.
+ * @param {object} params - parametri za upit.
+ * @param {number} params.page - trenutna stranica (default 1).
+ * @param {number} params.limit - broj rezultata po stranici (default 10).
+ * @param {string} params.sortBy - polje za sortiranje 
  * @returns {Promise<{data: Array, total: number, page: number, limit: number, totalPages: number}>}
  */
 export async function getActiveCompanies({ page = 1, limit = 10, sortBy = 'name' }) {
@@ -36,12 +30,12 @@ export async function getActiveCompanies({ page = 1, limit = 10, sortBy = 'name'
         .limit(limitNum)
         .offset(offset);
 
-    // opcionalno sortiranje (koristimo company_oib umjesto name)
+    // opcionalno sortiranje (koristi company_oib umjesto name)
     if (sortBy === 'name') {
-        // Sortiranje po company_oib
+        // sortiranje po company_oib
         query = query.orderBy('company_oib', 'asc');
     } else {
-        // Default sortiranje
+        // default sortiranje
         query = query.orderBy('id', 'asc');
     }
 
@@ -54,4 +48,12 @@ export async function getActiveCompanies({ page = 1, limit = 10, sortBy = 'name'
         limit: limitNum,
         totalPages: Math.ceil(total / limitNum)
     };
+}
+
+export async function getCompanyById(id) {
+    const company = await db('company')
+        .where('id', id)
+        .first();
+
+    return company || null;
 }
