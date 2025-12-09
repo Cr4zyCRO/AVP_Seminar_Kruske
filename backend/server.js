@@ -22,7 +22,7 @@ app.use(express.json());
 //maknuti posli, micite jwt, next middleware taj error cete dobit
 //dok se ne ne generira jwt pri loginu npr
 app.get("/protected", jwtCheck, (req, res) => {
-  res.send(`Hello, user with ID: ${req.user.id}`);
+  res.send("Hello, user!");
 });
 
 app.get("/admin", authorizeAdmin, (req, res) => {
