@@ -9,7 +9,7 @@ import {
 import usersRouter from './route/users.js';
 import AuthRouter from './route/auth.js';
 import companiesRouter from './route/companies.js';
-const { Model } = require('objection');
+import { Model } from 'objection';
 import db from './DB_config/knex.js';
 
 //run npm start:dev
