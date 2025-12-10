@@ -13,6 +13,10 @@ class SectorRepository {
     return await Sector.query().findOne({ sector_name: name });
   }
 
+  async create() {
+    return await Sector.query().insert(data).returning('*');
+  }
+
   async delete(name) {
     const sector = await this.getByName(name);
 
