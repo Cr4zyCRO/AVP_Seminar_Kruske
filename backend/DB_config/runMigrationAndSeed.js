@@ -2,11 +2,11 @@ import fs from 'fs';
 import path from 'path';
 import { pathToFileURL } from 'url';
 import Knex from 'knex';
-import { staging } from './knexfile.mjs';
+import { development, staging } from './knexfile.mjs';
 
 // za migraciju pokrenite ovaj file ili priko "node runMigrationAndSeed.js" ili npm run start:migration
 
-const knex = Knex(staging);
+const knex = Knex(development);
 
 async function runLatestMigration() {
   try {
