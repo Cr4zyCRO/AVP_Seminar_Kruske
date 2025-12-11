@@ -1,5 +1,15 @@
 import React from "react";
 import axios from "axios";
+import {
+  FaHome,
+  FaTools,
+  FaSchool,
+  FaFileAlt,
+  FaBuilding,
+  FaUser,
+  FaCog,
+  FaSignOutAlt,
+} from "react-icons/fa";
 
 export default function Sidebar({ role, onLogout }) {
   const handleLogout = async () => {
@@ -8,7 +18,9 @@ export default function Sidebar({ role, onLogout }) {
 
     if (token) {
       try {
-        await axios.post("http://localhost:5000/auth/logout", {},
+        await axios.post(
+          "http://localhost:5000/auth/logout",
+          null,
           { headers: { Authorization: `Bearer ${token}` } }
         );
       } catch (err) {
@@ -24,23 +36,23 @@ export default function Sidebar({ role, onLogout }) {
     <div className="sidebar">
       <h3>Menu</h3>
       <ul>
-        <li>🏠 Home</li>
+        <li><FaHome style={{ marginRight: 8 }} /> Home</li>
 
-        {role === "admin" && <li>🛠 Admin Panel</li>}
-        {role === "faculty" && <li>🏫 Faculty Panel</li>}
-        {role === "student" && <li>📄 My Applications</li>}
-        {role === "company" && <li>🏢 Company Dashboard</li>}
+        {role === "admin" && <li><FaTools style={{ marginRight: 8 }} /> Admin Panel</li>}
+        {role === "faculty" && <li><FaSchool style={{ marginRight: 8 }} /> Faculty Panel</li>}
+        {role === "student" && <li><FaFileAlt style={{ marginRight: 8 }} /> My Applications</li>}
+        {role === "company" && <li><FaBuilding style={{ marginRight: 8 }} /> Company Dashboard</li>}
 
-        <li>👤 Profile</li>
-        <li>⚙️ Settings</li>
+        <li><FaUser style={{ marginRight: 8 }} /> Profile</li>
+        <li><FaCog style={{ marginRight: 8 }} /> Settings</li>
 
         <li
           onClick={handleLogout}
           style={{ cursor: "pointer", color: "#ffb4b4" }}
         >
-          🚪 Logout
+          <FaSignOutAlt style={{ marginRight: 8 }} /> Logout
         </li>
       </ul>
     </div>
   );
-}
+} 

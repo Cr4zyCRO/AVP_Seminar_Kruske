@@ -1,11 +1,14 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "./LoginForm.css";
 
-export default function LoginForm() {
+export default function LoginForm({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -13,35 +16,16 @@ export default function LoginForm() {
     setError("");
 
     try {
-      const res = await fetch("http://localhost:5000/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Something went wrong");
+      const res = await axios.post("http://localhost:5000/auth/login", { email, password });
+      const data = res.data;
 
       localStorage.setItem("token", data.token);
+      setUser(JSON.parse(atob(data.token.split(".")[1])));
 
-      switch (data.user.role) {
-        case "admin":
-          window.location.href = "/admin";
-          break;
-        case "faculty":
-          window.location.href = "/faculty";
-          break;
-        case "student":
-          window.location.href = "/student";
-          break;
-        case "company":
-          window.location.href = "/company";
-          break;
-        default:
-          window.location.href = "/";
-      }
+      // Navigate to dashboard after login
+      navigate("/dashboard");
     } catch (err) {
-      setError(err.message);
+      setError(err.response?.data?.error || err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -51,27 +35,16 @@ export default function LoginForm() {
     <div className="login-container">
       <form className="login-form" onSubmit={handleLogin}>
         <h2>Login</h2>
-
         {error && <div className="error">{error}</div>}
 
         <div className="form-group">
           <label>Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+          <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
         </div>
 
         <div className="form-group">
           <label>Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </div>
 
         <button type="submit" disabled={loading}>

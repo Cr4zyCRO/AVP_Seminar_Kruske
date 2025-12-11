@@ -11,7 +11,7 @@ export default function Dashboard({ user, onLogout }) {
       <div className="main-content">
         <Header user={user} />
         <div className="content">
-          <h2>Welcome back, {user.role} 👋</h2>
+          <h2>Welcome back, {user.role} </h2>
           <p>Your personalized dashboard is ready.</p>
         </div>
       </div>

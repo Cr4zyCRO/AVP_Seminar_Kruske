@@ -3,8 +3,6 @@ import redisClient from "../config/redisClient.js";
 
 // Provjera JWT tokena i dekodiranje payloada
 export async function jwtCheck(req, res, next) {
-
-  console.log("Starting jwtCheck middleware...");
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     console.log("Authorization header missing");
