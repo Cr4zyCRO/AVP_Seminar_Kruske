@@ -1,4 +1,6 @@
-const { Model } = require('objection');
+//const { Model } = require('objection');
+import { Model } from 'objection';
+
 
 class Company extends Model {
   static get tableName() {
@@ -27,9 +29,9 @@ class Company extends Model {
   }
 
   static get relationMappings() {
-    const User = require('./User');
-    const Sector = require('./Sector');
-    const Application = require('./Application');
+    const User = import('./User');
+    const Sector = import('./Sector');
+    const Application = import('./Application');
 
     return {
       owner: {
@@ -62,4 +64,5 @@ class Company extends Model {
   }
 }
 
-module.exports = Company;
+export default Company;
+//export default Company;

@@ -1,4 +1,4 @@
-import Sector from '../models/Sector';
+import Sector from '../models/Sector.js';
 
 class SectorRepository {
   async getAll() {

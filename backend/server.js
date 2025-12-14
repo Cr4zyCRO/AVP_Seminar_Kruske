@@ -52,5 +52,6 @@ app.use('/users', usersRouter);
 app.use('/auth', AuthRouter);
 app.use('/companies', companiesRouter);
 
+
 const PORT = process.env.PORT || 5000; //process.env je npr. komanda: PORT=3000 node server.js
 app.listen(PORT, () => console.log('Server running on port ' + PORT));
