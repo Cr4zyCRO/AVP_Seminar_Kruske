@@ -9,21 +9,19 @@ const router = express.Router();
 
 router.get(
     "/", 
-        jwtCheck, // provjera jwt tokena
-        async (req, res) => {
-            try {
-                
-                let userId = 0;
-                // privremeno settamo na 0, očekivano je da ovisno o tome koji je 
-                // korisnik logiran da se njegovi certifikati prikažu
-                const result = await getUserCertificates(userId);
-                                
-                res.json(result);
-            } catch (err) {
-                console.error("Error fetching companies:", err.message);
-                res.status(500).json({ error: "Failed to fetch user certificates list" });
-            }
+    jwtCheck, // provjera jwt tokena
+    // check for is logged in user student needed
+    async (req, res) => {
+        try {
+            
+            const result = await getUserCertificates(req.user.id); // this req.user.id should return currently logged in user certificates
+                            
+            res.json(result);
+        } catch (err) {
+            console.error("Error fetching companies:", err.message);
+            res.status(500).json({ error: "Failed to fetch user certificates list" });
         }
+    }
 )
 
 
