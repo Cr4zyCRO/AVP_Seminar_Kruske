@@ -9,6 +9,7 @@ import {
 import usersRouter from './route/users.js';
 import AuthRouter from './route/auth.js';
 import companiesRouter from './route/companies.js';
+import certificatesRouter from './route/certificates.js'
 import { Model } from 'objection';
 import db from './DB_config/knex.js';
 
@@ -51,6 +52,7 @@ app.get('/', (req, res) => {
 app.use('/users', usersRouter);
 app.use('/auth', AuthRouter);
 app.use('/companies', companiesRouter);
+app.use("/certificates", certificatesRouter)
 
 
 const PORT = process.env.PORT || 5000; //process.env je npr. komanda: PORT=3000 node server.js
