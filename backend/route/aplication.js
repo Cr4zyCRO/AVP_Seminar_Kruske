@@ -44,4 +44,24 @@ router.post(
   }
 );
 
+router.get('/applications/:student_id', async (req, res) => {
+  try {
+    const { student_id } = req.params;
+
+    const applications = await Application.query()
+      .where('application.student_id', student_id)
+      .joinRelated('company')
+      .select(
+        'application.id',
+        'application.status',
+        'application.created_at',
+        'company.name as company_name'
+      )
+      .orderBy('application.created_at', 'desc');
+
+    res.status(200).json(applications);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
 module.exports = router;
