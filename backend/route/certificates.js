@@ -1,7 +1,7 @@
 import express from "express";
 import Joi from "joi";
 import { getActiveCompanies, getCompanyById } from "../repo/companies.js";
-import { jwtCheck } from "../middleware/authMiddleware.js"; // Middleware za provjeru JWT-a
+import { authorizeStudent, jwtCheck } from "../middleware/authMiddleware.js"; // Middleware za provjeru JWT-a
 import { query, params } from "../middleware/validate.js";         // Middleware za Joi validaciju
 
 const router = express.Router();
@@ -10,7 +10,7 @@ const router = express.Router();
 router.get(
     "/", 
     jwtCheck, // provjera jwt tokena
-    // check for is logged in user student needed
+    authorizeStudent, // provjera da samo student može pozvati ovaj endpoint
     async (req, res) => {
         try {
             
