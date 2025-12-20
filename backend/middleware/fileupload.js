@@ -1,6 +1,7 @@
-const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import { fileURLToPath } from 'url';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 
