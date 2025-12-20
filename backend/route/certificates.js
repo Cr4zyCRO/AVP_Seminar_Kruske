@@ -1,6 +1,7 @@
 import express from "express";
 import Joi from "joi";
-import { getActiveCompanies, getCompanyById } from "../repo/companies.js";
+//import { getActiveCompanies, getCompanyById } from "../repo/companies.js";
+import CompanyRepo from "../repo/companies.js";
 import { authorizeStudent, jwtCheck } from "../middleware/authMiddleware.js"; // Middleware za provjeru JWT-a
 import { query, params } from "../middleware/validate.js";         // Middleware za Joi validaciju
 
