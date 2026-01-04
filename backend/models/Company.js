@@ -1,6 +1,10 @@
-//const { Model } = require('objection');
 import { Model } from 'objection';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { randomUUID } from 'crypto';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class Company extends Model {
   static get tableName() {
@@ -9,6 +13,12 @@ class Company extends Model {
 
   static get idColumn() {
     return 'id';
+  }
+
+  $beforeInsert() {
+    if (!this.id) {
+      this.id = randomUUID();
+    }
   }
 
   static get jsonSchema() {
@@ -29,14 +39,10 @@ class Company extends Model {
   }
 
   static get relationMappings() {
-    const User = import('./User');
-    const Sector = import('./Sector');
-    const Application = import('./Application');
-
     return {
       owner: {
         relation: Model.BelongsToOneRelation,
-        modelClass: User,
+        modelClass: path.join(__dirname, 'User.js'),
         join: {
           from: 'company.owner_id',
           to: 'user.id',
@@ -45,7 +51,7 @@ class Company extends Model {
 
       sector: {
         relation: Model.BelongsToOneRelation,
-        modelClass: Sector,
+        modelClass: path.join(__dirname, 'Sector.js'),
         join: {
           from: 'company.sector_id',
           to: 'sector.id',
@@ -54,7 +60,7 @@ class Company extends Model {
 
       applications: {
         relation: Model.HasManyRelation,
-        modelClass: Application,
+        modelClass: path.join(__dirname, 'Application.js'),
         join: {
           from: 'company.id',
           to: 'application.company_id',
@@ -65,4 +71,3 @@ class Company extends Model {
 }
 
 export default Company;
-//export default Company;

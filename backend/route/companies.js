@@ -12,7 +12,7 @@ const router = express.Router();
 // --- JOI SHEME ZA VALIDACIJU ---
 
 // Validacija query parametara za listu (GET /)
-const getCompaniesSchema = Joi.object({
+const getCompaniesSchema = {
     page: Joi.number().integer().min(1).default(1),
     limit: Joi.number().integer().min(1).max(100).default(10),
     sortBy: Joi.string().valid('address', 'city', 'id', 'name').default('id'), 
@@ -25,12 +25,12 @@ const getCompaniesSchema = Joi.object({
     
     // Pretraživanje po nazivu kompanije (min 3 znaka)
     search: Joi.string().min(3).max(255).optional().allow(''),
-});
+};
 
 // Validacija ID parametra za detalje (GET /:id)
-const getCompanyParamsSchema = Joi.object({
+const getCompanyParamsSchema = {
     id: Joi.string().guid({ version: 'uuidv4' }).required(), 
-});
+};
 
 // --- RUTE ---
 
