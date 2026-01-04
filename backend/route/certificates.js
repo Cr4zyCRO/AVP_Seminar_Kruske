@@ -9,7 +9,7 @@ const { getCertificateContent, getCertificates } = CompanyController
 const router = express.Router();
 
 
-// Validacija ID parametra za detalje (GET /:certificateId)
+// Validacija ID parametra za detalje (GET /:id)
 const getCompanyParamsSchema = {
     id: Joi.string().guid({ version: 'uuidv4' }).required(), 
 };
@@ -28,13 +28,13 @@ router.get(
 );
 
 /**
- * @route   GET /certificates/:certificateId
+ * @route   GET /certificates/:id
  * @desc    Dohvaća pdf content certifikata
  * @access  Private (JWT)
  */
 
 router.get(
-    "/:certificateId",
+    "/:id",
     jwtCheck,
     params(getCompanyParamsSchema),
     getCertificateContent
