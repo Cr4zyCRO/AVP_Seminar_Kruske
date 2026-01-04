@@ -1,4 +1,4 @@
-import CertificateRepository from "../repo/certificates";
+import CertificateRepository from "../repo/certificates.js";
 
 async function getCertificates(req, res) {
     try {
