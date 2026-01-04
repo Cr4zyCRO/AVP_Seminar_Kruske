@@ -34,4 +34,4 @@ class CertificateRepository {
     }
 }
 
-export default CertificateRepository
+export default new CertificateRepository();

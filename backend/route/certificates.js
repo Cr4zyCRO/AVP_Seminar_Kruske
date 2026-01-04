@@ -2,17 +2,10 @@ import express from "express";
 import Joi from "joi";
 import { query, params } from "../middleware/validate.js"; 
 import { authorizeStudent, jwtCheck } from "../middleware/authMiddleware.js"; // Middleware za provjeru JWT-a
-import CompanyController from "../controllers/certificatesController.js"
+import CertificatesController from "../controllers/certificatesController.js"
 
-
-const { getCertificateContent, getCertificates } = CompanyController
 const router = express.Router();
 
-
-// Validacija ID parametra za detalje (GET /:id)
-const getCompanyParamsSchema = {
-    id: Joi.string().guid({ version: 'uuidv4' }).required(), 
-};
 
 /**
  * @route   GET /certificates
@@ -24,7 +17,7 @@ router.get(
     "/", 
     jwtCheck, // provjera jwt tokena
     authorizeStudent, // provjera da samo student može pozvati ovaj endpoint
-    getCertificates
+    CertificatesController.getCertificates
 );
 
 /**
@@ -36,8 +29,7 @@ router.get(
 router.get(
     "/:id",
     jwtCheck,
-    params(getCompanyParamsSchema),
-    getCertificateContent
+    CertificatesController.getCertificateContent
 );
 
 export default router;

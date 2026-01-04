@@ -8,7 +8,7 @@ export async function seed(knex) {
 
   await knex('certificate').insert([
     {
-      id: uuid(),
+      id: 1,
       student_id: student.id,
       application_id: application.id,
       certificate_name: 'Certificate.pdf',
