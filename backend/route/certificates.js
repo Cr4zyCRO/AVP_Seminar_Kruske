@@ -1,11 +1,23 @@
 import express from "express";
 import Joi from "joi";
+import multer from "multer";
 import { query, params } from "../middleware/validate.js"; 
 import { authorizeStudent, jwtCheck } from "../middleware/authMiddleware.js"; // Middleware za provjeru JWT-a
 import CertificatesController from "../controllers/certificatesController.js"
 
 const router = express.Router();
 
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 15 * 1024 * 1024, // 15MB (adjust)
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept only PDFs (mimetype can be spoofed; we also verify header below)
+    if (file.mimetype !== "application/pdf") return cb(new Error("Only PDF uploads allowed"));
+    cb(null, true);
+  },
+});
 
 /**
  * @route   GET /certificates
@@ -31,5 +43,20 @@ router.get(
     jwtCheck,
     CertificatesController.getCertificateContent
 );
+
+/**
+ * @route   POST /certificates
+ * @desc    Inserta novi certifikat
+ * @access  Private (JWT)
+ */
+
+router.post(
+    "/",
+    jwtCheck,
+    authorizeStudent,
+    upload.single("file"),
+    CertificatesController.insertNewUserCertificate
+);
+
 
 export default router;

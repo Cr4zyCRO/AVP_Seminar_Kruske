@@ -5,7 +5,7 @@ class CertificateRepository {
 
     async getUserCertificates(userId) {
         const certificates = Certificate.query()
-            .select('id, student_id, application_id, certificate_name, status')
+            .select('id', 'student_id', 'application_id', 'certificate_name', 'status')
             .where('student_id', userId);
         
         return certificates || null;
@@ -16,6 +16,10 @@ class CertificateRepository {
         return Certificate.query()
         .findById(certificateId)
         .first();
+    }
+
+    async insertNewUserCertificate(certificate) {
+        return Certificate.query().insert(certificate);
     }
 
     base64ToPdfBuffer(base64String) {
