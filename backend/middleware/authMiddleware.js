@@ -1,23 +1,47 @@
 import jwt from "jsonwebtoken";
+import redisClient from "../config/redisClient.js";
 
 // Provjera JWT tokena i dekodiranje payloada
-export function jwtCheck(req, res, next) {
+export async function jwtCheck(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader) {
+    console.log("Authorization header missing");
     return res.status(401).json({ error: "Authorization header missing" });
   }
 
   const token = authHeader.split(" ")[1];
   if (!token) {
+    console.log("Bearer token missing");
     return res.status(401).json({ error: "Bearer token missing" });
   }
 
-  try {
+  console.log("Redis client status:", redisClient.isOpen ? "Connected" : "Not connected");
+
+  if (!redisClient.isOpen) {
+    console.error("Redis client is not connected.");
+    return res.status(500).json({ error: "Redis connection error" });
+  }
+
+  console.log("Checking token in Redis...");
+
+    try {
+    // Dohvati vrijednost iz Redis-a koristeći await
+    const result = await redisClient.get(token);
+    console.log("Redis GET result:", result);
+
+    if (result === "blacklisted") {
+      console.log("Token is blacklisted");
+      return res.status(403).json({ error: "Token is blacklisted" });
+    }
+
+    console.log("Verifying token...");
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = { id: decoded.id, role: decoded.role }; // Sprema korisnika u req za kasniju upotrebu
-    next();
+    console.log("Token decoded successfully:", decoded);
+    next(); // Nastavlja na sljedeći middleware ili rutu
   } catch (err) {
-    return res.status(403).json({ error: "Invalid token" });
+    console.error("Error during Redis GET or JWT verification:", err);
+    return res.status(403).json({ error: "Invalid token or Redis error" });
   }
 }
 

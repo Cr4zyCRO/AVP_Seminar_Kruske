@@ -26,13 +26,14 @@ Sve navedene komande izvršite unutar backend direktorija projekta.  /backend
 
 docker compose down -v --rmi all     [Briše stare kontejnere, Volume-e (uključujući podatke baze!) i sve kreirane Docker slike. Osigurava čisti start.]
 docker compose up -d --build         [Pokreće servise u pozadini (-d) i prisiljava ponovnu izgradnju (--build) backend slike, osiguravajući da se koristi najnoviji kod i .env]
-npm run start:migration		     [stvara migracije]
 
 
-Za buduće pokretanje/gašenje kontejnera:
 
-docker compose up -d
+Nakon svake promjene u kodu redom pokrenuti:
+
 docker compose down
+docker compose up --build
+
 
 -------------------------------------------
 

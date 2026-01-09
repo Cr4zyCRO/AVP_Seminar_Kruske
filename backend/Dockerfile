@@ -20,4 +20,5 @@ ENV PORT=5000
 EXPOSE 5000
 
 # pokrece server (CMD - starta kontejner, RUN - builda image)
-CMD ["npm", "start"]
+CMD ["npm", "start", "start:full"]  
+# doda start:full za migracije
