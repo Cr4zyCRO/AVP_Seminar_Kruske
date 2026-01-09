@@ -1,59 +1,92 @@
-import db from "../DB_config/knex.js";
+// repo/companies.js
+//import Company from '../models/Company.js'; // Pretpostavka da se može importovati Company model unatoč module.exports u samom modelu
+
+//import CompanyModule from '../models/Company.js';
+//const Company = CompanyModule.default || CompanyModule;
+import Company from '../models/Company.js'; // CommonJS Uvoz
 
 /**
- * Dohvaca paginiranu listu kompanija.
- 
-  Sortiranje se vrsi po 'company_oib' umjesto 'name' za 'sortBy=name'.
- * @param {object} params - parametri za upit.
- * @param {number} params.page - trenutna stranica (default 1).
- * @param {number} params.limit - broj rezultata po stranici (default 10).
- * @param {string} params.sortBy - polje za sortiranje 
- * @returns {Promise<{data: Array, total: number, page: number, limit: number, totalPages: number}>}
+ * Repozitorij za upravljanje podacima Kompanija (Company).
+ * Koristi ORM (Objection.js/Knex).
  */
-export async function getActiveCompanies({ page = 1, limit = 10, sortBy = 'name' }) {
-    const pageNum = parseInt(page, 10) || 1;
-    const limitNum = parseInt(limit, 10) || 10;
-    const offset = (pageNum - 1) * limitNum;
+class CompanyRepository {
 
-    // dohvati ukupan broj kompanija (bez filtera is_active)
-    const countResult = await db('company')
-        .count('id as total')
-        .first();
-    
-    const total = parseInt(countResult.total, 10);
-
-    // dohvati paginirane podatke
-    let query = db('company')
+    /**
+     * Dohvaća paginiranu listu kompanija, filtriranu i pretraživanu, te ukupni broj zapisa.
+     * Sortiranje se vrši po 'company_oib' ako je 'sortBy' postavljen na 'name'.
+     *
+     * @param {object} params - parametri za upit.
+     * @param {number} [params.page=1] - trenutna stranica.
+     * @param {number} [params.limit=10] - broj rezultata po stranici.
+     * @param {string} [params.sortBy='name'] - polje za sortiranje.
+     * @param {string} [params.address] - Adresa za filtriranje
+     * @param {string} [params.city] - Grad za filtriranje.
+     * @param {string} [params.search] - String za pretragu (djelomični match).
+     * @returns {Promise<{data: Array, total: number, page: number, limit: number, totalPages: number}>}
+     */
+    async getActiveCompanies({ page = 1, limit = 10, sortBy, address, city, search }) { // req.query dolazi ovde
+        const pageNum = parseInt(page, 10) || 1;
+        const limitNum = parseInt(limit, 10) || 10;
         
-        .select('*') 
-    
-        .limit(limitNum)
-        .offset(offset);
+        let query = Company.query().select('*');
+        
+        // 1. Primjena Filtriranja (Filters)
+        if (address) {
+            query = query.where('LOWER(address)', address.toLowerCase()); // select * where lower(address)...
+        }
 
-    // opcionalno sortiranje (koristi company_oib umjesto name)
-    if (sortBy === 'name') {
-        // sortiranje po company_oib
-        query = query.orderBy('company_oib', 'asc');
-    } else {
-        // default sortiranje
-        query = query.orderBy('id', 'asc');
+        if (city) {
+            // Pretraga po gradu mora biti case-insensitive ako to dozvoljava baza
+            query = query.whereRaw('LOWER(city) = ?', city.toLowerCase()); // select * where lower(city)...
+        }
+
+        // 2. Primjena Pretrage (Search)
+        if (search) {
+            const searchTerm = `%${search.toLowerCase()}%`;
+            // Traženje po company_oib, adresi, mailu (primjer)
+            query = query.where((builder) => {
+                builder
+                    .whereRaw('LOWER(company_oib) LIKE ?', searchTerm)
+                    .orWhereRaw('LOWER(address) LIKE ?', searchTerm)
+                    .orWhereRaw('LOWER(email) LIKE ?', searchTerm);
+            });
+        }
+
+        // 3. Definicija upita za sortiranje
+        if (sortBy === 'city') {
+            // Sortiranje po company_oib umjesto name, kao što je zahtijevano
+            query = query.orderBy('city', 'asc');
+        }
+        else if (sortBy === 'address') {
+            query = query.orderBy('address', 'asc');
+        }
+        else {
+            // Default sortiranje
+            query = query.orderBy('id', 'asc');
+        }
+
+        // 4. Izvršavanje paginiranog upita
+        const result = await query.page(pageNum - 1, limitNum);
+
+        // 5. Vraćanje strukturiranog odgovora
+        return {
+            data: result.results,
+            total: result.total,
+            page: pageNum,
+            limit: limitNum,
+            totalPages: Math.ceil(result.total / limitNum)
+        };
     }
 
-    const data = await query;
-
-    return {
-        data,
-        total,
-        page: pageNum,
-        limit: limitNum,
-        totalPages: Math.ceil(total / limitNum)
-    };
+    /**
+     * Dohvaća kompaniju prema ID-u.
+     * @param {string} id - UUID kompanije.
+     * @returns {Promise<Company|null>}
+     */
+    async getCompanyById(id) {
+        const company = await Company.query().findById(id); 
+        return company || null;
+    }
 }
 
-export async function getCompanyById(id) {
-    const company = await db('company')
-        .where('id', id)
-        .first();
-
-    return company || null;
-}
+export default CompanyRepository;

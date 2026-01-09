@@ -1,9 +1,14 @@
-const express = require('express');
+import express from 'express';
 const router = express.Router();
-const auth = require('../middleware/authMiddleware');
-const { createWorkDiaryEntry } = require('../controllers/workDiaryController');
+
+import auth from '../middleware/authMiddleware.js';
+import { createWorkDiaryEntry, updateLogEntry } from '../controllers/workDiaryController.js';
 
 router.post('/work-diary', auth, createWorkDiaryEntry);
 router.put("/work-diary/:id", auth, updateLogEntry);
 
-module.exports = router;
+export default router;
+
+
+
+

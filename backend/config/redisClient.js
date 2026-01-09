@@ -1,7 +1,12 @@
 import { createClient } from "redis";
 
+// U Dockeru će REDIS_HOST biti 'redis' (hostname kontejnera)
+// U lokalnom okruženju (ako ga nemate u .env), bit će fallback na '127.0.0.1'
+const REDIS_HOST = process.env.REDIS_HOST || "127.0.0.1";
+const REDIS_PORT = process.env.REDIS_PORT || "6379";
+
 const redisClient = createClient({
-  url: "redis://127.0.0.1:6379",
+  url: `redis://${REDIS_HOST}:${REDIS_PORT}`,
 });
 
 redisClient.on("connect", () => {

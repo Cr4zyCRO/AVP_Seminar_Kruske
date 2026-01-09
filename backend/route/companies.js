@@ -1,82 +1,61 @@
-
-
 import express from "express";
 import Joi from "joi";
-import { getActiveCompanies, getCompanyById } from "../repo/companies.js";
-import { jwtCheck } from "../middleware/authMiddleware.js"; // Middleware za provjeru JWT-a
-import { query, params } from "../middleware/validate.js";         // Middleware za Joi validaciju
+import CompanyController from "../controllers/companiesController.js"; 
+import { jwtCheck } from "../middleware/authMiddleware.js"; 
+import { query, params } from "../middleware/validate.js"; 
+
+// Destrukturiramo funkcije iz kontrolera
+const { getCompanies, getCompanyDetails } = CompanyController;
 
 const router = express.Router();
 
-// joi schema za validaciju query parametara (paginacija, sortiranje)
+// --- JOI SHEME ZA VALIDACIJU ---
+
+// Validacija query parametara za listu (GET /)
 const getCompaniesSchema = {
-   
     page: Joi.number().integer().min(1).default(1),
-    
     limit: Joi.number().integer().min(1).max(100).default(10),
+    sortBy: Joi.string().valid('address', 'city', 'id', 'name').default('id'), 
     
-    sortBy: Joi.string().valid('name').default('name'), 
+    // Filtriranje po ID-u sektora (UUID)
+    sectorId: Joi.string().uuid().optional(),
+    
+    // Filtriranje po gradu
+    city: Joi.string().max(100).optional(), 
+    
+    // Pretraživanje po nazivu kompanije (min 3 znaka)
+    search: Joi.string().min(3).max(255).optional().allow(''),
 };
 
-// joi schema za validaciju ID parametra (GET /companies/{id})
+// Validacija ID parametra za detalje (GET /:id)
 const getCompanyParamsSchema = {
-    // ID mora biti ispravan UUID
     id: Joi.string().guid({ version: 'uuidv4' }).required(), 
 };
 
-// GET /companies?page=1&limit=10&sortBy=name
-// Endpoint za dohvat paginirane liste aktivnih kompanija
+// --- RUTE ---
+
+/**
+ * @route   GET /companies
+ * @desc    Dohvaća listu aktivnih kompanija s paginacijom i filterima
+ * @access  Private (JWT)
+ */
 router.get(
     "/", 
-    jwtCheck, // provjera jwt tokena
-    query(getCompaniesSchema), // validacija query parametara
-    async (req, res) => {
-        try {
-            // parametri su vec validirani i postavljeni na defaultne vrijednosti
-            const { page, limit, sortBy } = req.query;
-
-            // dohvat podataka iz repo
-            const result = await getActiveCompanies({ page, limit, sortBy });
-            
-            // slanje paginiranog rezultata
-            res.json(result);
-        } catch (err) {
-            console.error("Error fetching companies:", err.message);
-            res.status(500).json({ error: "Failed to fetch company list" });
-        }
-    }
+    jwtCheck,                   // Provjera tokena
+    query(getCompaniesSchema),  // Validacija queryja (search, page, sectorId...)
+    getCompanies                // Funkcija iz kontrolera
 );
 
-
-
-
-// GET /companies/{id} (Detalji) ---
-// endpoint za dohvat detalja jedne kompanije
+/**
+ * @route   GET /companies/:id
+ * @desc    Dohvaća detalje jedne kompanije prema ID-u
+ * @access  Private (JWT)
+ */
 router.get(
     "/:id", 
-    jwtCheck, // zasticeno za sve autentificirane korisnike
-    params(getCompanyParamsSchema), // validacija ID-a
-    async (req, res) => {
-        const { id } = req.params;
-   
-        try {
-            const company = await getCompanyById(id);
-
-            if (!company) {
-             
-                return res.status(404).json({ error: `Company with ID ${id} not found.` });
-            }
-
-            // Vraca detalje kompanije
-            res.json(company);
-
-        } catch (err) {
-            console.error(`Error fetching company details for ID ${id}:`, err.message);
-            res.status(500).json({ error: "Failed to fetch company details" });
-        }
-    }
+    jwtCheck,                       // Provjera tokena
+    params(getCompanyParamsSchema),  // Validacija da je ID ispravan UUID
+    getCompanyDetails               // Funkcija iz kontrolera
 );
-
-
 
 export default router;
