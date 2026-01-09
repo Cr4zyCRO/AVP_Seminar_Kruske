@@ -10,20 +10,26 @@ import db from "../DB_config/knex.js";
  * @param {string} params.sortBy - polje za sortiranje 
  * @returns {Promise<{data: Array, total: number, page: number, limit: number, totalPages: number}>}
  */
-export async function getActiveCompanies({ page = 1, limit = 10, sortBy = 'name' }) {
-    const pageNum = parseInt(page, 10) || 1;
-    const limitNum = parseInt(limit, 10) || 10;
-    const offset = (pageNum - 1) * limitNum;
+class CompanyRepository {
 
-    // dohvati ukupan broj kompanija (bez filtera is_active)
-    const countResult = await db('company')
-        .count('id as total')
-        .first();
-    
-    const total = parseInt(countResult.total, 10);
-
-    // dohvati paginirane podatke
-    let query = db('company')
+    /**
+     * Dohvaća paginiranu listu kompanija, filtriranu i pretraživanu, te ukupni broj zapisa.
+     * Sortiranje se vrši po 'company_oib' ako je 'sortBy' postavljen na 'name'.
+     *
+     * @param {object} params - parametri za upit.
+     * @param {number} [params.page=1] - trenutna stranica.
+     * @param {number} [params.limit=10] - broj rezultata po stranici.
+     * @param {string} [params.sortBy='name'] - polje za sortiranje.
+     * @param {string} [params.address] - Adresa za filtriranje
+     * @param {string} [params.city] - Grad za filtriranje.
+     * @param {string} [params.search] - String za pretragu (djelomični match).
+     * @returns {Promise<{data: Array, total: number, page: number, limit: number, totalPages: number}>}
+     */
+    async getActiveCompanies({ page = 1, limit = 10, sortBy, address, city, search }) { // req.query dolazi ovde
+        const pageNum = parseInt(page, 10) || 1;
+        const limitNum = parseInt(limit, 10) || 10;
+        
+        let query = Company.query().select('*');
         
         .select('*') 
     
@@ -39,7 +45,16 @@ export async function getActiveCompanies({ page = 1, limit = 10, sortBy = 'name'
         query = query.orderBy('id', 'asc');
     }
 
-    const data = await query;
+    /**
+     * Dohvaća kompaniju prema ID-u.
+     * @param {string} id - UUID kompanije.
+     * @returns {Promise<Company|null>}
+     */
+    async getCompanyById(id) {
+        const company = await Company.query().findById(id); 
+        return company || null;
+    }
+}
 
     return {
         data,

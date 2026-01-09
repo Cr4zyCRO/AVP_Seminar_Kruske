@@ -1,4 +1,10 @@
-const { Model } = require('objection');
+import { Model } from 'objection';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { randomUUID } from 'crypto';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class Certificate extends Model {
   static get tableName() {
@@ -7,6 +13,12 @@ class Certificate extends Model {
 
   static get idColumn() {
     return 'id';
+  }
+
+  $beforeInsert() {
+    if (!this.id) {
+      this.id = randomUUID();
+    }
   }
 
   static get jsonSchema() {
@@ -26,13 +38,10 @@ class Certificate extends Model {
   }
 
   static get relationMappings() {
-    const User = require('./User');
-    const Application = require('./Application');
-
     return {
       student: {
         relation: Model.BelongsToOneRelation,
-        modelClass: User,
+        modelClass: path.join(__dirname, 'User.js'),
         join: {
           from: 'certificate.student_id',
           to: 'user.id',
@@ -41,7 +50,7 @@ class Certificate extends Model {
 
       application: {
         relation: Model.BelongsToOneRelation,
-        modelClass: Application,
+        modelClass: path.join(__dirname, 'Application.js'),
         join: {
           from: 'certificate.application_id',
           to: 'application.id',
@@ -51,4 +60,4 @@ class Certificate extends Model {
   }
 }
 
-module.exports = Certificate;
+export default Certificate;

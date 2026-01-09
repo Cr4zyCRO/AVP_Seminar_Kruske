@@ -60,3 +60,10 @@ export function authorizeFaculty(req, res, next) {
   }
   next();
 }
+
+export function authorizeStudent(req, res, next) {
+  if (req.user.role != "student") {
+    return res.status(403).json({error: "Student access required"});
+  }
+  next();
+}

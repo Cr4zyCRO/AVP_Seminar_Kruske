@@ -1,4 +1,10 @@
-const { Model } = require('objection');
+import { Model } from 'objection';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { randomUUID } from 'crypto';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class Application extends Model {
   static get tableName() {
@@ -7,6 +13,12 @@ class Application extends Model {
 
   static get idColumn() {
     return 'id';
+  }
+
+  $beforeInsert() {
+    if (!this.id) {
+      this.id = randomUUID();
+    }
   }
 
   static get jsonSchema() {
@@ -28,16 +40,10 @@ class Application extends Model {
   }
 
   static get relationMappings() {
-    const User = require('./User');
-    const Company = require('./Company');
-    const Certificate = require('./Certificate');
-    const WorkDiary = require('./WorkDiary');
-    const PracticeReport = require('./PracticeReport');
-
     return {
       student: {
         relation: Model.BelongsToOneRelation,
-        modelClass: User,
+        modelClass: path.join(__dirname, 'User.js'),
         join: {
           from: 'application.student_id',
           to: 'user.id',
@@ -46,7 +52,7 @@ class Application extends Model {
 
       company: {
         relation: Model.BelongsToOneRelation,
-        modelClass: Company,
+        modelClass: path.join(__dirname, 'Company.js'),
         join: {
           from: 'application.company_id',
           to: 'company.id',
@@ -55,7 +61,7 @@ class Application extends Model {
 
       companyMentor: {
         relation: Model.BelongsToOneRelation,
-        modelClass: User,
+        modelClass: path.join(__dirname, 'User.js'),
         join: {
           from: 'application.company_mentor_id',
           to: 'user.id',
@@ -64,7 +70,7 @@ class Application extends Model {
 
       facultyMentor: {
         relation: Model.BelongsToOneRelation,
-        modelClass: User,
+        modelClass: path.join(__dirname, 'User.js'),
         join: {
           from: 'application.faculty_mentor_id',
           to: 'user.id',
@@ -73,7 +79,7 @@ class Application extends Model {
 
       certificates: {
         relation: Model.HasManyRelation,
-        modelClass: Certificate,
+        modelClass: path.join(__dirname, 'Certificate.js'),
         join: {
           from: 'application.id',
           to: 'certificate.application_id',
@@ -82,7 +88,7 @@ class Application extends Model {
 
       workDiaries: {
         relation: Model.HasManyRelation,
-        modelClass: WorkDiary,
+        modelClass: path.join(__dirname, 'WorkDiary.js'),
         join: {
           from: 'application.id',
           to: 'work_diary.application_id',
@@ -91,7 +97,7 @@ class Application extends Model {
 
       practiceReports: {
         relation: Model.HasManyRelation,
-        modelClass: PracticeReport,
+        modelClass: path.join(__dirname, 'PracticeReport.js'),
         join: {
           from: 'application.id',
           to: 'practice_report.application_id',
@@ -101,4 +107,4 @@ class Application extends Model {
   }
 }
 
-module.exports = Application;
+export default Application;

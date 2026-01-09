@@ -1,16 +1,13 @@
 import express from "express";
-import { getAllUsers } from "../repo/users.js";
+import UsersController from "../controllers/UsersController.js";
+import { jwtCheck, authorizeAdmin } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.get("/", async (req, res) => {
-  try {
-    const users = await getAllUsers();
-    res.json(users);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Failed to fetch users" });
-  }
-});
+router.get("/",jwtCheck, authorizeAdmin, UsersController.getAllUsers);
+router.get("/:id", jwtCheck, authorizeAdmin, UsersController.getUserById);
+router.post("/", jwtCheck, authorizeAdmin, UsersController.createUser);
+router.put("/:id",jwtCheck, authorizeAdmin, UsersController.updateUser);
+router.delete("/:id",jwtCheck, authorizeAdmin, UsersController.deleteUser);
 
 export default router;

@@ -1,4 +1,10 @@
-const { Model } = require('objection');
+import { Model } from 'objection';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { randomUUID } from 'crypto';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class WorkDiary extends Model {
   static get tableName() {
@@ -7,6 +13,12 @@ class WorkDiary extends Model {
 
   static get idColumn() {
     return 'id';
+  }
+
+  $beforeInsert() {
+    if (!this.id) {
+      this.id = randomUUID();
+    }
   }
 
   static get jsonSchema() {
@@ -25,13 +37,10 @@ class WorkDiary extends Model {
   }
 
   static get relationMappings() {
-    const User = require('./User');
-    const Application = require('./Application');
-
     return {
       student: {
         relation: Model.BelongsToOneRelation,
-        modelClass: User,
+        modelClass: path.join(__dirname, 'User.js'),
         join: {
           from: 'work_diary.student_id',
           to: 'user.id',
@@ -40,7 +49,7 @@ class WorkDiary extends Model {
 
       application: {
         relation: Model.BelongsToOneRelation,
-        modelClass: Application,
+        modelClass: path.join(__dirname, 'Application.js'),
         join: {
           from: 'work_diary.application_id',
           to: 'application.id',
@@ -50,4 +59,4 @@ class WorkDiary extends Model {
   }
 }
 
-module.exports = WorkDiary;
+export default WorkDiary;

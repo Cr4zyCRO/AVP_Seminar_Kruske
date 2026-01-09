@@ -1,4 +1,5 @@
-const WorkDiary = require('../models/WorkDiary');
+
+import WorkDiary from '../models/WorkDiary.js';
 
 exports.createWorkDiaryEntry = async (req, res) => {
   try {

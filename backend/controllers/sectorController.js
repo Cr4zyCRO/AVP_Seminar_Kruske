@@ -1,6 +1,7 @@
 import { EMPTY } from 'sqlite3';
 import SectorRepository from '../repo/sector';
 
+
 class sectorController {
   async getAllSectors(req, res) {
     try {

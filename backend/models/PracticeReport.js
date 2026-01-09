@@ -1,4 +1,10 @@
-const { Model } = require('objection');
+import { Model } from 'objection';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { randomUUID } from 'crypto';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class PracticeReport extends Model {
   static get tableName() {
@@ -7,6 +13,12 @@ class PracticeReport extends Model {
 
   static get idColumn() {
     return 'id';
+  }
+
+  $beforeInsert() {
+    if (!this.id) {
+      this.id = randomUUID();
+    }
   }
 
   static get jsonSchema() {
@@ -27,13 +39,10 @@ class PracticeReport extends Model {
   }
 
   static get relationMappings() {
-    const Application = require('./Application');
-    const User = require('./User');
-
     return {
       application: {
         relation: Model.BelongsToOneRelation,
-        modelClass: Application,
+        modelClass: path.join(__dirname, 'Application.js'),
         join: {
           from: 'practice_report.application_id',
           to: 'application.id',
@@ -42,7 +51,7 @@ class PracticeReport extends Model {
 
       student: {
         relation: Model.BelongsToOneRelation,
-        modelClass: User,
+        modelClass: path.join(__dirname, 'User.js'),
         join: {
           from: 'practice_report.student_id',
           to: 'user.id',
@@ -51,7 +60,7 @@ class PracticeReport extends Model {
 
       facultyMentor: {
         relation: Model.BelongsToOneRelation,
-        modelClass: User,
+        modelClass: path.join(__dirname, 'User.js'),
         join: {
           from: 'practice_report.faculty_mentor_id',
           to: 'user.id',
@@ -61,4 +70,4 @@ class PracticeReport extends Model {
   }
 }
 
-module.exports = PracticeReport;
+export default PracticeReport;
