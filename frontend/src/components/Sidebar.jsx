@@ -50,8 +50,8 @@ export default function Sidebar({ role, onLogout }) {
         {role === "student" && <li><FaFileAlt style={{ marginRight: 8 }} /> My Applications</li>}
         {role === "mentor" && <li><FaBuilding style={{ marginRight: 8 }} /> Mentor Dashboard</li>}
 
-        <li><FaUser style={{ marginRight: 8 }} /> Profile</li>
-        <li><FaCog style={{ marginRight: 8 }} /> Settings</li>
+        <li onClick={() => navigate('/profile')}><FaUser style={{ marginRight: 8 }} /> Profile</li>
+        <li onClick={() => navigate('/settings')}><FaCog style={{ marginRight: 8 }} /> Settings</li>
 
         <li
           onClick={handleLogout}

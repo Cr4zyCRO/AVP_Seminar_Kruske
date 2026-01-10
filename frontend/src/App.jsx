@@ -6,6 +6,7 @@ import CompanyList from "./components/CompanyList";
 import CompanyDetails from "./components/CompanyDetails";
 import ApplicationForm from './components/ApplicationForm';
 import AdminUsers from './components/AdminUsers';
+import Settings from './components/Settings';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -70,6 +71,18 @@ function App() {
             user && user.role === "admin" ? (
               <Layout user={user} onLogout={handleLogout}>
                 <AdminUsers />
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <Settings user={user} />
               </Layout>
             ) : (
               <Navigate to="/login" />
