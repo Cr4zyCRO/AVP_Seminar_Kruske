@@ -2,6 +2,7 @@ import { Model } from 'objection';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { randomUUID } from 'crypto';
+import bcrypt from 'bcrypt';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,9 +16,18 @@ class User extends Model {
     return 'id';
   }
 
-  $beforeInsert() {
+  async $beforeInsert() {
     if (!this.id) {
       this.id = randomUUID();
+    }
+    if (this.password) {
+      this.password = await bcrypt.hash(this.password, 10);
+    }
+  }
+
+  async $beforeUpdate() {
+    if (this.password) {
+      this.password = await bcrypt.hash(this.password, 10);
     }
   }
 

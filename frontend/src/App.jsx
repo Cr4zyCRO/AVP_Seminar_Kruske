@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Dashboard from "./components/Dashboard";
+import Layout from "./components/Layout";
 import LoginForm from "./components/LoginForm";
 import CompanyList from "./components/CompanyList"; 
 import CompanyDetails from "./components/CompanyDetails";
-import ApplicationForm from './components/ApplicationForm'; // Ključna linija
+import ApplicationForm from './components/ApplicationForm';
+import AdminUsers from './components/AdminUsers';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -29,7 +30,7 @@ function App() {
     setUser(null);
   };
 
-  if (loading) return null; // Čekamo provjeru tokena
+  if (loading) return null;
 
   return (
     <Router>
@@ -40,20 +41,64 @@ function App() {
         />
         <Route
           path="/dashboard"
-          element={user ? <Dashboard user={user} onLogout={handleLogout} /> : <Navigate to="/login" />}
+          element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <h2>Welcome back, {user.role}</h2>
+                <p>Your personalized dashboard is ready.</p>
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
         <Route
           path="/companies"
-          element={user ? <CompanyList /> : <Navigate to="/login" />}
+          element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <CompanyList />
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
-        {/* Ispravljeno: Zaštitili smo rutu za prijavu */}
+        <Route 
+          path="/admin/users" 
+          element={
+            user && user.role === "admin" ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <AdminUsers />
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
         <Route 
           path="/apply/:companyId" 
-          element={user ? <ApplicationForm /> : <Navigate to="/login" />} 
+          element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <ApplicationForm />
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
         <Route
           path="/companies/:id"
-          element={user ? <CompanyDetails /> : <Navigate to="/login" />}
+          element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <CompanyDetails />
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
         />
         <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
       </Routes>

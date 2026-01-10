@@ -1,17 +1,20 @@
 import React from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import {
   FaHome,
-  FaTools,
   FaSchool,
   FaFileAlt,
   FaBuilding,
   FaUser,
   FaCog,
   FaSignOutAlt,
+  FaUsers,
 } from "react-icons/fa";
 
 export default function Sidebar({ role, onLogout }) {
+  const navigate = useNavigate();
+
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
     console.log("Logging out with token:", token);
@@ -36,12 +39,16 @@ export default function Sidebar({ role, onLogout }) {
     <div className="sidebar">
       <h3>Menu</h3>
       <ul>
-        <li><FaHome style={{ marginRight: 8 }} /> Home</li>
+        <li onClick={() => navigate("/dashboard")}><FaHome style={{ marginRight: 8 }} /> Home</li>
 
-        {role === "admin" && <li><FaTools style={{ marginRight: 8 }} /> Admin Panel</li>}
-        {role === "faculty" && <li><FaSchool style={{ marginRight: 8 }} /> Faculty Panel</li>}
+        {role === "admin" && (
+          <li onClick={() => navigate("/admin/users")}>
+            <FaUsers style={{ marginRight: 8 }} /> User Management
+          </li>
+        )}
+        {role === "professor" && <li><FaSchool style={{ marginRight: 8 }} /> Professor Panel</li>}
         {role === "student" && <li><FaFileAlt style={{ marginRight: 8 }} /> My Applications</li>}
-        {role === "company" && <li><FaBuilding style={{ marginRight: 8 }} /> Company Dashboard</li>}
+        {role === "mentor" && <li><FaBuilding style={{ marginRight: 8 }} /> Mentor Dashboard</li>}
 
         <li><FaUser style={{ marginRight: 8 }} /> Profile</li>
         <li><FaCog style={{ marginRight: 8 }} /> Settings</li>
