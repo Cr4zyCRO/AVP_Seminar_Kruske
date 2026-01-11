@@ -126,9 +126,6 @@ export default function Certificates({ user, onLogout }) {
 
       try {
         const payload = { id: certificateId, status: newStatus };
-
-        console.log("im updating");
-        console.log(payload);
         await axios.put(`${API_URL}/certificates`, payload, {
           headers: getAuthHeaders(),
         });

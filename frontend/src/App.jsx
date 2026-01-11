@@ -5,6 +5,7 @@ import LoginForm from "./components/LoginForm";
 import CompanyList from "./components/CompanyList"; 
 import CompanyDetails from "./components/CompanyDetails";
 import ApplicationForm from './components/ApplicationForm';
+import Dashboard from "./components/Dashboard";
 import AdminUsers from './components/AdminUsers';
 import Settings from './components/Settings';
 import PracticeReport from './components/PracticeReport';
@@ -39,6 +40,7 @@ function App() {
   return (
     <Router>
       <Routes>
+        <Route path="/" element= {<Navigate to="/login" replace/>}/>
         <Route
           path="/login"
           element={user ? <Navigate to="/dashboard" /> : <LoginForm setUser={setUser} />}
@@ -48,8 +50,7 @@ function App() {
           element={
             user ? (
               <Layout user={user} onLogout={handleLogout}>
-                <h2>Welcome back, {user.role}</h2>
-                <p>Your personalized dashboard is ready.</p>
+                <Dashboard user={user} onLogout={handleLogout}/>
               </Layout>
             ) : (
               <Navigate to="/login" />

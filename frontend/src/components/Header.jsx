@@ -9,7 +9,7 @@ export default function Header({ user }) {
         Dashboard
       </h1>
       <div className="user-info">
-        <span>Jane Doe</span>
+        <span>{user.email}</span>
         <span style={{ marginLeft: "0.5rem", opacity: 0.8 }}>
           ({user.role})
         </span>
