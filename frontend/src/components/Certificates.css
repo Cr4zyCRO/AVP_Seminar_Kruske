@@ -204,3 +204,17 @@
     max-width: 100%;
   }
 }
+
+
+.certificates-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.certificates-scroll::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
+}
+
+.certificates-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}

@@ -264,7 +264,7 @@ const removeCertificate = useCallback(
   return (
     <div>
       <div>
-        <div style={{ padding: 24, background: "#F6F7F9", minHeight: "100vh" }}>
+        <div style={{ padding: 24, background: "#F6F7F9", minHeight: "50vh" }}>
           <h1 style={{ margin: 0, marginBottom: 18, fontSize: 34, fontWeight: 800, color: "#111827" }}>
             Student Certificates
           </h1>
@@ -312,7 +312,10 @@ const removeCertificate = useCallback(
               ) : certificates.length === 0 ? (
                 <div style={{ color: "#6B7280", padding: 12 }}>No certificates found.</div>
               ) : (
-                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                <div
+                    className="certificates-scroll"
+                    style={{ maxHeight: 420, overflowY: "auto", paddingRight: 6 }}
+                  >
                   {certificates.map((c) => {
                     const isActive = selected?.id === c.id;
                     const name = `${c.firstname ?? ""} ${c.lastname ?? ""}`.trim() || "Unknown student";
@@ -323,6 +326,8 @@ const removeCertificate = useCallback(
                         onClick={() => setSelected(c)}
                         style={{
                           all: "unset",
+                          width: "90%",
+                          margin: "2px",
                           cursor: "pointer",
                           padding: 14,
                           borderRadius: 14,
@@ -505,7 +510,7 @@ const removeCertificate = useCallback(
           </div>
         </div>
         {user.role === "student" ? (
-        <div style={{ maxWidth: 520 }}>
+        <div style={{ padding: 24, background: "#F6F7F9"}}>
           <div
             role="button"
             tabIndex={0}
