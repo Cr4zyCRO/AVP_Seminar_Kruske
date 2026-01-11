@@ -3,13 +3,13 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
   FaHome,
-  FaSchool,
   FaFileAlt,
   FaBuilding,
   FaUser,
   FaCog,
   FaSignOutAlt,
   FaUsers,
+  FaClipboardCheck,
 } from "react-icons/fa";
 
 export default function Sidebar({ role, onLogout }) {
@@ -46,8 +46,19 @@ export default function Sidebar({ role, onLogout }) {
             <FaUsers style={{ marginRight: 8 }} /> User Management
           </li>
         )}
-        {role === "professor" && <li><FaSchool style={{ marginRight: 8 }} /> Professor Panel</li>}
-        {role === "student" && <li><FaFileAlt style={{ marginRight: 8 }} /> My Applications</li>}
+        {(role === "professor" || role === "admin") && (
+          <li onClick={() => navigate("/faculty/reports")}>
+            <FaClipboardCheck style={{ marginRight: 8 }} /> Review Reports
+          </li>
+        )}
+        {role === "student" && (
+          <>
+            <li onClick={() => navigate("/practice-report")}>
+              <FaFileAlt style={{ marginRight: 8 }} /> Practice Report
+            </li>
+            <li><FaFileAlt style={{ marginRight: 8 }} /> My Applications</li>
+          </>
+        )}
         {role === "mentor" && <li><FaBuilding style={{ marginRight: 8 }} /> Mentor Dashboard</li>}
 
         <li onClick={() => navigate('/profile')}><FaUser style={{ marginRight: 8 }} /> Profile</li>

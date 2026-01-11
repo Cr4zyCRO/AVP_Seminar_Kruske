@@ -1,10 +1,5 @@
 import { Model } from 'objection';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import { randomUUID } from 'crypto';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 class PracticeReport extends Model {
   static get tableName() {
@@ -38,36 +33,8 @@ class PracticeReport extends Model {
     };
   }
 
-  static get relationMappings() {
-    return {
-      application: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: path.join(__dirname, 'Application.js'),
-        join: {
-          from: 'practice_report.application_id',
-          to: 'application.id',
-        },
-      },
-
-      student: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: path.join(__dirname, 'User.js'),
-        join: {
-          from: 'practice_report.student_id',
-          to: 'user.id',
-        },
-      },
-
-      facultyMentor: {
-        relation: Model.BelongsToOneRelation,
-        modelClass: path.join(__dirname, 'User.js'),
-        join: {
-          from: 'practice_report.faculty_mentor_id',
-          to: 'user.id',
-        },
-      },
-    };
-  }
+  // relationMappings removed due to ES Module compatibility issues with Objection.js
+  // Used manual joins in controller instead
 }
 
 export default PracticeReport;

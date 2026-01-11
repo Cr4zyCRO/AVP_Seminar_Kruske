@@ -7,6 +7,8 @@ import CompanyDetails from "./components/CompanyDetails";
 import ApplicationForm from './components/ApplicationForm';
 import AdminUsers from './components/AdminUsers';
 import Settings from './components/Settings';
+import PracticeReport from './components/PracticeReport';
+import FacultyReportReview from './components/FacultyReportReview';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -107,6 +109,30 @@ function App() {
             user ? (
               <Layout user={user} onLogout={handleLogout}>
                 <CompanyDetails />
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/practice-report"
+          element={
+            user && user.role === "student" ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <PracticeReport />
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/faculty/reports"
+          element={
+            user && (user.role === "professor" || user.role === "admin") ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <FacultyReportReview />
               </Layout>
             ) : (
               <Navigate to="/login" />
