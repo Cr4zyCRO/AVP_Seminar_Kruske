@@ -54,7 +54,6 @@ export default function Certificates({ user, onLogout }) {
   const [isUploading, setIsUploading] = useState(false);
   const [loadingPdf, setLoadingPdf] = useState(false);
   const [error, setError] = useState('');
-  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   
   
   const getAuthHeaders = useCallback(() => {
@@ -124,16 +123,16 @@ export default function Certificates({ user, onLogout }) {
       if (!certificateId || !newStatus) return;
 
       setError("");
-      setIsUpdatingStatus(true);
 
       try {
         const payload = { id: certificateId, status: newStatus };
 
-        await axios.put(`${API_URL}/certificates/${certificateId}`, payload, {
+        console.log("im updating");
+        console.log(payload);
+        await axios.put(`${API_URL}/certificates`, payload, {
           headers: getAuthHeaders(),
         });
 
-        // Update selected + list locally so UI reflects change immediately
         setSelected((prev) => (prev?.id === certificateId ? { ...prev, status: newStatus } : prev));
 
         setCertificates((prev) =>
@@ -141,25 +140,39 @@ export default function Certificates({ user, onLogout }) {
         );
       } catch (err) {
         setError(err?.response?.data?.error || err?.message || "Failed to update status.");
-      } finally {
-        setIsUpdatingStatus(false);
       }
     },
     [getAuthHeaders, setCertificates, setSelected, setError]
   );
 
-  const removeCertificate = useCallback(
-  async (id) => {
+const removeCertificate = useCallback(
+  async (certificateId) => {
+    if (!certificateId) return;
+
     setError("");
+    setCertificates((prev) => (prev ?? []).filter((c) => c.id !== certificateId));
+    setSelected((prev) => (prev?.id === certificateId ? null : prev));
+
     try {
-      await axios.delete(`${API_URL}/certificates/${id}`, {
-        headers: getAuthHeaders(),
+      await axios.delete(`${API_URL}/certificates/${certificateId}`, {
+        headers: { ...getAuthHeaders() },
       });
-      console.log("deleted");
-      await fetchCertificates();
-      console.log("refetched");
+
+      if (typeof fetchCertificates === "function") {
+        await fetchCertificates();
+      }
     } catch (err) {
-      setError(err?.response?.data?.error || err?.message || "Remove failed.");
+      console.log("REMOVE ERROR:", err);
+
+      setError(
+        err?.response?.data?.error ||
+          err?.message ||
+          "Failed to remove certificate."
+      );
+
+      if (typeof fetchCertificates === "function") {
+        await fetchCertificates();
+      }
     }
   },
   [getAuthHeaders, fetchCertificates]
@@ -448,7 +461,6 @@ export default function Certificates({ user, onLogout }) {
                       (
                         <select
                           value={normalizeStatus(selected.status)}
-                          disabled={isUpdatingStatus}
                           onChange={(e) => updateCertificateStatus(selected.id, e.target.value)}
                           style={{
                             border: "1px solid #E5E7EB",
@@ -456,7 +468,6 @@ export default function Certificates({ user, onLogout }) {
                             borderRadius: 12,
                             padding: "10px 12px",
                             fontWeight: 800,
-                            cursor: isUpdatingStatus ? "not-allowed" : "pointer",
                             outline: "none",
                           }}
                         >

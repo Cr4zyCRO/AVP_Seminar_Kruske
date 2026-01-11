@@ -87,19 +87,15 @@ class CertificateRepository {
 
     async getUsersApplicationId(userId) {
         const application = await Application.query().where('student_id', userId).select('id').first();
-        console.log(application.id)
+
         return application.id;
     }
 
-    async updateUserCertificateStatus(certificateId, status, mentorId) {
-
-        const application_id = Application.query().where('faculty_mentor_id', mentorId).orWhere('company_mentor_id', mentorId).select('id');
-
-        return certificate = Certificate.query().patch(
+    async updateUserCertificateStatus(certificateId, status) {
+        return Certificate.query().patch(
             { status: status }
         )
         .where('id', certificateId)
-        .andWhere('application_id', application_id)
     };
 }
 

@@ -110,7 +110,6 @@ class CertificatesController{
     async updateUserCertificateStatus(req, res) {
         const {id, status} = req.body;
         try {
-            
             const allowedStatuses = ["unapproved", "approved", "rejected"]
 
             if (!allowedStatuses.includes(status.toString().toLowerCase())) {
@@ -119,7 +118,6 @@ class CertificatesController{
             }
 
             const updatedCertificate = await CertificateRepository.updateUserCertificateStatus(id, status);
-
             if (updatedCertificate === 0) {
                 console.error("Certificate status not updatead");
                 res.status(400).json({ error: `Certificate status is not updatead` });

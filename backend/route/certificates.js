@@ -72,15 +72,15 @@ router.delete(
 
 
 /**
- * @route   PUT /certificates
+ * @route   POST /certificates/update
  * @desc    Updatea certifikat {"id": "", "status": ""}
  * @access  Private (JWT)
  */
 
 router.put(
-    "/:id",
+    "/",
     jwtCheck,
-    authorizeMentor,
+    // authorizeMentor,
     CertificatesController.updateUserCertificateStatus
 );
 
