@@ -2,7 +2,7 @@ import express from "express";
 import Joi from "joi";
 import multer from "multer";
 import { query, params } from "../middleware/validate.js"; 
-import { authorizeStudent, jwtCheck } from "../middleware/authMiddleware.js"; // Middleware za provjeru JWT-a
+import { authorizeFaculty, authorizeMentor, authorizeStudent, jwtCheck } from "../middleware/authMiddleware.js"; // Middleware za provjeru JWT-a
 import CertificatesController from "../controllers/certificatesController.js"
 
 const router = express.Router();
@@ -28,7 +28,6 @@ const upload = multer({
 router.get(
     "/", 
     jwtCheck, // provjera jwt tokena
-    authorizeStudent, // provjera da samo student može pozvati ovaj endpoint
     CertificatesController.getCertificates
 );
 
@@ -56,6 +55,33 @@ router.post(
     authorizeStudent,
     upload.single("file"),
     CertificatesController.insertNewUserCertificate
+);
+
+/**
+ * @route   DELETE /certificates/:id
+ * @desc    Removea certifikat
+ * @access  Private (JWT)
+ */
+
+router.delete(
+    "/:id",
+    jwtCheck,
+    authorizeStudent,
+    CertificatesController.removeUserCertificate
+);
+
+
+/**
+ * @route   PUT /certificates
+ * @desc    Updatea certifikat {"id": "", "status": ""}
+ * @access  Private (JWT)
+ */
+
+router.put(
+    "/",
+    jwtCheck,
+    authorizeMentor,
+    CertificatesController.updateUserCertificateStatus
 );
 
 
