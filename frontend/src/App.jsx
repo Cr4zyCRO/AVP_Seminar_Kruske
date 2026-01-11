@@ -9,6 +9,7 @@ import AdminUsers from './components/AdminUsers';
 import Settings from './components/Settings';
 import PracticeReport from './components/PracticeReport';
 import FacultyReportReview from './components/FacultyReportReview';
+import Certificates from "./components/Certificates";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -139,7 +140,18 @@ function App() {
             )
           }
         />
-        <Route path="*" element={<Navigate to={user ? "/dashboard" : "/login"} />} />
+        <Route
+          path="/certificates"
+          element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <Certificates user={user} onLogout={handleLogout}/>
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
       </Routes>
     </Router>
   );

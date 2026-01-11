@@ -5,7 +5,8 @@ class CertificateRepository {
 
     async getUserCertificates(userId) {
         const certificates = Certificate.query()
-            .select('id', 'student_id', 'application_id', 'certificate_name', 'status')
+            .select('certificate.id', 'student.firstname', 'student.lastname', 'application_id', 'certificate_name', 'status')
+            .joinRelated('student')
             .where('student_id', userId);
         
         return certificates || null;
@@ -13,7 +14,8 @@ class CertificateRepository {
 
     async getCertificates() {
         const certificates = Certificate.query()
-            .select('id', 'student_id', 'application_id', 'certificate_name', 'status');
+            .select('certificate.id', 'student.firstname', 'student.lastname', 'application_id', 'certificate_name', 'status')
+            .joinRelated('student')
 
         return certificates || null;
     }
@@ -24,7 +26,8 @@ class CertificateRepository {
             .select('student_id');
 
         const certificates = Certificate.query()
-            .select('id', 'student_id', 'application_id', 'certificate_name', 'status')
+            .select('certificate.id', 'student.firstname', 'student.lastname', 'application_id', 'certificate_name', 'status')
+            .joinRelated('student')
             .whereIn('student_id', students);
 
         return certificates;
@@ -36,7 +39,8 @@ class CertificateRepository {
             .select('student_id');
 
         const certificates = Certificate.query()
-            .select('id', 'student_id', 'application_id', 'certificate_name', 'status')
+            .select('certificate.id', 'student.firstname', 'student.lastname', 'application_id', 'certificate_name', 'status')
+            .joinRelated('student')
             .whereIn('student_id', students);
 
         return certificates;
@@ -78,11 +82,13 @@ class CertificateRepository {
     }
 
     async removeUserCertificate(certificateId) {
-        return certificate = Certificate.query().deleteById(certificateId);
+        return Certificate.query().deleteById(certificateId);
     }
 
     async getUsersApplicationId(userId) {
-        return applicationId = Application.query().findById(userId).select('id').first();
+        const application = await Application.query().where('student_id', userId).select('id').first();
+        console.log(application.id)
+        return application.id;
     }
 
     async updateUserCertificateStatus(certificateId, status, mentorId) {

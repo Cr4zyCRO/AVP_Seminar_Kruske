@@ -64,7 +64,7 @@ export function authorizeFaculty(req, res, next) {
 export function authorizeMentor(req, res, next) {
   const allowedRoles = ["faculty", "admin", "mentor", "professor"];
 
-  if (!allowedRoles.includes(allowedRoles.toLowerCase())) {
+  if (!allowedRoles.includes(req.user.role.toString().toLowerCase())) {
     return res.status(403).json({ error: "Mentor access required" });
   }
 }

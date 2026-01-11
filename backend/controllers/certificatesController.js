@@ -5,9 +5,7 @@ class CertificatesController{
 
     async getCertificates(req, res) {
         try {
-
             const user = await UserRepository.getUserById(req.user.id);
-            
             let result;
 
             if (user.role === "student") {
@@ -64,6 +62,7 @@ class CertificatesController{
 
             const { originalname, mimetype, size, buffer } = req.file;
             const base64 = buffer.toString("base64");
+
             const application_id = await CertificateRepository.getUsersApplicationId(req.user.id);
 
             const newCertificate = await CertificateRepository.insertNewUserCertificate({
@@ -114,7 +113,7 @@ class CertificatesController{
             
             const allowedStatuses = ["unapproved", "approved", "rejected"]
 
-            if (!allowedStatuses.includes(status.toLowerCase())) {
+            if (!allowedStatuses.includes(status.toString().toLowerCase())) {
                 console.error("Status request is not allowed");
                 res.status(400).json({ error: `Entered status is not valid status` });
             }

@@ -1,0 +1,206 @@
+.settings-container {
+  padding: 1rem;
+  max-width: 800px;
+}
+
+.settings-container h2 {
+  margin: 0 0 1.5rem 0;
+  color: #1f2d3d;
+}
+
+.settings-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 1.2rem;
+  color: #6c757d;
+}
+
+.settings-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.5rem;
+  overflow: hidden;
+}
+
+.card-header {
+  background-color: #1f2d3d;
+  color: white;
+  padding: 1rem 1.5rem;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+/* Profile Grid */
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.profile-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.profile-item label {
+  font-size: 0.85rem;
+  color: #6c757d;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.profile-item span {
+  font-size: 1rem;
+  color: #1f2d3d;
+  font-weight: 500;
+}
+
+/* Role badges */
+.role-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  width: fit-content;
+}
+
+.role-admin {
+  background-color: #dc3545;
+  color: white;
+}
+
+.role-student {
+  background-color: #007bff;
+  color: white;
+}
+
+.role-mentor {
+  background-color: #fd7e14;
+  color: white;
+}
+
+.role-professor {
+  background-color: #6f42c1;
+  color: white;
+}
+
+/* Password Form */
+.password-form {
+  max-width: 400px;
+}
+
+.password-form .form-group {
+  margin-bottom: 1.25rem;
+}
+
+.password-form .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.password-form .form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.password-form .form-group input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+}
+
+.password-form .form-group input::placeholder {
+  color: #aaa;
+}
+
+.field-error {
+  display: block;
+  margin-top: 0.5rem;
+  color: #dc3545;
+  font-size: 0.875rem;
+}
+
+.field-success {
+  display: block;
+  margin-top: 0.5rem;
+  color: #28a745;
+  font-size: 0.875rem;
+}
+
+.form-actions {
+  margin-top: 1.5rem;
+}
+
+.btn-save {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-save:hover:not(:disabled) {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+.btn-save:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Messages */
+.success-message {
+  background-color: #d4edda;
+  color: #155724;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  border: 1px solid #c3e6cb;
+}
+
+.error-message {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  border: 1px solid #f5c6cb;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .password-form {
+    max-width: 100%;
+  }
+}

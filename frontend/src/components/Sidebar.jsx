@@ -10,6 +10,7 @@ import {
   FaSignOutAlt,
   FaUsers,
   FaClipboardCheck,
+  FaList,
 } from "react-icons/fa";
 
 export default function Sidebar({ role, onLogout }) {
@@ -62,6 +63,7 @@ export default function Sidebar({ role, onLogout }) {
         {role === "mentor" && <li><FaBuilding style={{ marginRight: 8 }} /> Mentor Dashboard</li>}
 
         <li onClick={() => navigate('/profile')}><FaUser style={{ marginRight: 8 }} /> Profile</li>
+        <li onClick={() => navigate('/certificates')}><FaList style={{ marginRight: 8 }} /> Certificates</li>
         <li onClick={() => navigate('/settings')}><FaCog style={{ marginRight: 8 }} /> Settings</li>
 
         <li

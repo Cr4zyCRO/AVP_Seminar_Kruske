@@ -78,7 +78,7 @@ router.delete(
  */
 
 router.put(
-    "/",
+    "/:id",
     jwtCheck,
     authorizeMentor,
     CertificatesController.updateUserCertificateStatus
