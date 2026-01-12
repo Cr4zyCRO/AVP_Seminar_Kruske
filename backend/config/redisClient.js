@@ -1,7 +1,15 @@
 import { createClient } from "redis";
 
+/**
+ * Dinamičko postavljanje hosta i porta.
+ * U Dockeru će koristiti 'redis' (iz env varijabli), 
+ * a lokalno će pasti natrag na '127.0.0.1'.
+ */
+const host = process.env.REDIS_HOST || "127.0.0.1";
+const port = process.env.REDIS_PORT || "6379";
+
 const redisClient = createClient({
-  url: "redis://127.0.0.1:6379",
+  url: `redis://${host}:${port}`,
 });
 
 redisClient.on("connect", () => {
