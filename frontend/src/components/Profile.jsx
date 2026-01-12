@@ -40,7 +40,7 @@ export default function Profile() {
     <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto', fontFamily: 'sans-serif' }}>
       <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
         <div style={{ fontSize: '5rem', color: '#007bff', marginBottom: '1rem' }}>👤</div>
-        <h2>Moj Profil</h2>
+        <h2>My Profile</h2>
         
       </div>
 
@@ -49,23 +49,23 @@ export default function Profile() {
           <div>
             <div style={{ display: 'flex', gap: '2rem', marginBottom: '1.5rem' }}>
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <label style={{ fontWeight: 'bold', color: '#666', marginBottom: '0.5rem' }}>Ime</label>
+                <label style={{ fontWeight: 'bold', color: '#666', marginBottom: '0.5rem' }}>Name</label>
                 <span style={{ background: '#f8f9fa', padding: '10px', borderRadius: '4px' }}>{profile.firstname}</span>
               </div>
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <label style={{ fontWeight: 'bold', color: '#666', marginBottom: '0.5rem' }}>Prezime</label>
+                <label style={{ fontWeight: 'bold', color: '#666', marginBottom: '0.5rem' }}>Surname</label>
                 <span style={{ background: '#f8f9fa', padding: '10px', borderRadius: '4px' }}>{profile.lastname}</span>
               </div>
             </div>
 
             <div style={{ marginBottom: '1.5rem', display: 'flex', flexDirection: 'column' }}>
-              <label style={{ fontWeight: 'bold', color: '#666', marginBottom: '0.5rem' }}>Email adresa</label>
+              <label style={{ fontWeight: 'bold', color: '#666', marginBottom: '0.5rem' }}>Email address</label>
               <span style={{ background: '#f8f9fa', padding: '10px', borderRadius: '4px' }}>{profile.email}</span>
             </div>
 
             <div style={{ display: 'flex', gap: '2rem', marginBottom: '1.5rem' }}>
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <label style={{ fontWeight: 'bold', color: '#666', marginBottom: '0.5rem' }}>Uloga</label>
+                <label style={{ fontWeight: 'bold', color: '#666', marginBottom: '0.5rem' }}>Role</label>
                 <span style={{ 
                   background: '#daebff', 
                   color: '#007bff', 
@@ -78,7 +78,7 @@ export default function Profile() {
                 </span>
               </div>
               <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <label style={{ fontWeight: 'bold', color: '#666', marginBottom: '0.5rem' }}>Član od</label>
+                <label style={{ fontWeight: 'bold', color: '#666', marginBottom: '0.5rem' }}>Member since</label>
                 <span style={{ background: '#f8f9fa', padding: '10px', borderRadius: '4px' }}>
                   {new Date(profile.is_created).toLocaleDateString()}
                 </span>
@@ -97,7 +97,7 @@ export default function Profile() {
             </div>
           </div>
         ) : (
-          <p>Podaci o profilu nisu dostupni.</p>
+          <p>Profile data not available.</p>
         )}
       </div>
     </div>
