@@ -12,6 +12,8 @@ import PracticeReport from './components/PracticeReport';
 import FacultyReportReview from './components/FacultyReportReview';
 import Certificates from "./components/Certificates";
 
+import Profile from "./components/Profile";
+
 function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -153,6 +155,19 @@ function App() {
             )
           }
         />
+        <Route
+          path="/profile"
+          element={
+            user ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <Profile />
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
       </Routes>
     </Router>
   );
