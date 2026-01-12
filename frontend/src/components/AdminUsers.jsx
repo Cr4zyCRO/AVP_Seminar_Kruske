@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "./AdminUsers.css";
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
 export default function AdminUsers() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +26,7 @@ export default function AdminUsers() {
   });
 
   const token = localStorage.getItem("token");
-  const apiUrl = "http://localhost:5000/users";
+  const apiUrl = `${API_BASE_URL}/users`;
 
   // Fetch users
   const fetchUsers = async () => {

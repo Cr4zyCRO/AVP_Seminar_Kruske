@@ -13,6 +13,8 @@ import {
   FaList,
 } from "react-icons/fa";
 
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
 export default function Sidebar({ role, onLogout }) {
   const navigate = useNavigate();
 
@@ -23,7 +25,7 @@ export default function Sidebar({ role, onLogout }) {
     if (token) {
       try {
         await axios.post(
-          "http://localhost:5000/auth/logout",
+          `${API_URL}/auth/logout`,
           null,
           { headers: { Authorization: `Bearer ${token}` } }
         );

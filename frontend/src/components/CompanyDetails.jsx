@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
 export default function CompanyDetails() {
   const { id } = useParams(); // ID iz URL-a
   const navigate = useNavigate();
@@ -19,7 +21,7 @@ export default function CompanyDetails() {
         const token = localStorage.getItem("token");
 
         const res = await axios.get(
-          `http://localhost:5000/companies/${id}`,
+          `${API_URL}/companies/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

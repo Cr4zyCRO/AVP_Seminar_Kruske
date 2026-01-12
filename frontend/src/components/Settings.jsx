@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./Settings.css";
 
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
 export default function Settings() {
   const [profile, setProfile] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,7 +20,7 @@ export default function Settings() {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/users/me", {
+        const res = await axios.get(`${API_URL}/users/me`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setProfile(res.data);
@@ -51,7 +53,7 @@ export default function Settings() {
     setUpdating(true);
     try {
       await axios.put(
-        "http://localhost:5000/users/me",
+        `${API_URL}/users/me`,
         { currentPassword, newPassword },
         { headers: { Authorization: `Bearer ${token}` } }
       );

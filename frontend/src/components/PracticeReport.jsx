@@ -2,7 +2,9 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import './PracticeReport.css';
 
-const API_URL = 'http://localhost:5000';
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
 
 export default function PracticeReport() {
   const [report, setReport] = useState(null);

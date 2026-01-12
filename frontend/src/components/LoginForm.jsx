@@ -3,6 +3,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./LoginForm.css";
 
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
 export default function LoginForm({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -16,7 +19,7 @@ export default function LoginForm({ setUser }) {
     setError("");
 
     try {
-      const res = await axios.post("http://localhost:5000/auth/login", { email, password });
+      const res = await axios.post(`${API_URL}/auth/login`, { email, password });
       const data = res.data;
 
       localStorage.setItem("token", data.token);

@@ -2,7 +2,8 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import "./Certificates.css";
 
-const API_URL = 'http://localhost:5000';
+
+const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 const statusStyles = {
   Unapproved: { bg: "#FFF4E5", fg: "#D97706", border: "#FCD34D" }, // orange
