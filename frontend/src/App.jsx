@@ -11,6 +11,7 @@ import Settings from './components/Settings';
 import PracticeReport from './components/PracticeReport';
 import FacultyReportReview from './components/FacultyReportReview';
 import Certificates from "./components/Certificates";
+import WorkDiary from "./components/WorkDiary";
 
 import Profile from "./components/Profile";
 
@@ -125,6 +126,18 @@ function App() {
             user && user.role === "student" ? (
               <Layout user={user} onLogout={handleLogout}>
                 <PracticeReport />
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/work-diary"
+          element={
+            user && user.role === "student" ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <WorkDiary />
               </Layout>
             ) : (
               <Navigate to="/login" />

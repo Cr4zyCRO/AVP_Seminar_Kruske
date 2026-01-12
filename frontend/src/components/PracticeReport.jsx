@@ -273,7 +273,7 @@ export default function PracticeReport() {
             )}
 
             <div className="actions">
-              {report.report_status === 'draft' && (
+              {(report.report_status === 'draft' || report.report_status === 'submitted') && (
                 <>
                   <label className="upload-btn secondary">
                     <input
@@ -285,19 +285,21 @@ export default function PracticeReport() {
                     {uploading ? 'Uploading...' : 'Replace PDF'}
                   </label>
 
-                  <button
-                    className="submit-btn"
-                    onClick={handleSubmit}
-                    disabled={submitting || !report.report_file}
-                  >
-                    {submitting ? 'Submitting...' : 'Submit for Review'}
-                  </button>
+                  {report.report_status === 'draft' && (
+                    <button
+                      className="submit-btn"
+                      onClick={handleSubmit}
+                      disabled={submitting || !report.report_file}
+                    >
+                      {submitting ? 'Submitting...' : 'Submit for Review'}
+                    </button>
+                  )}
                 </>
               )}
 
               {report.report_status === 'submitted' && (
                 <div className="pending-message">
-                  ⏳ Your report is pending faculty review.
+                  ⏳ Your report is pending faculty review. You can still update the PDF if needed.
                 </div>
               )}
 

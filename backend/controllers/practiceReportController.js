@@ -137,10 +137,9 @@ export const uploadReport = async (req, res) => {
       .first();
 
     if (report) {
-
-      if (report.report_status !== 'draft') {
+      if (report.report_status === 'approved_by_faculty') {
         return res.status(400).json({ 
-          message: 'Cannot update report after submission.' 
+          message: 'Cannot update report after faculty approval.' 
         });
       }
 

@@ -11,6 +11,7 @@ import {
   FaUsers,
   FaClipboardCheck,
   FaList,
+  FaBook,
 } from "react-icons/fa";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
@@ -56,6 +57,9 @@ export default function Sidebar({ role, onLogout }) {
         )}
         {role === "student" && (
           <>
+            <li onClick={() => navigate("/work-diary")}>
+              <FaBook style={{ marginRight: 8 }} /> Work Diary
+            </li>
             <li onClick={() => navigate("/practice-report")}>
               <FaFileAlt style={{ marginRight: 8 }} /> Practice Report
             </li>
