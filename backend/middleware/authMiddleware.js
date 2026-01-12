@@ -53,9 +53,9 @@ export function authorizeAdmin(req, res, next) {
   next();
 }
 
-// Faculty
 export function authorizeFaculty(req, res, next) {
-  if (req.user.role !== "faculty") {
+  const allowedRoles = ["faculty", "professor", "admin"];
+  if (!allowedRoles.includes(req.user.role?.toLowerCase())) {
     return res.status(403).json({ error: "Faculty access required" });
   }
   next();
@@ -64,9 +64,10 @@ export function authorizeFaculty(req, res, next) {
 export function authorizeMentor(req, res, next) {
   const allowedRoles = ["faculty", "admin", "mentor", "professor"];
 
-  if (!allowedRoles.includes(req.user.role.toString().toLowerCase())) {
+  if (!allowedRoles.includes(req.user.role?.toString().toLowerCase())) {
     return res.status(403).json({ error: "Mentor access required" });
   }
+  next();
 }
 
 

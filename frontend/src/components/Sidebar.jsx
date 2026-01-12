@@ -50,10 +50,15 @@ export default function Sidebar({ role, onLogout }) {
             <FaUsers style={{ marginRight: 8 }} /> User Management
           </li>
         )}
-        {(role === "professor" || role === "admin") && (
-          <li onClick={() => navigate("/faculty/reports")}>
-            <FaClipboardCheck style={{ marginRight: 8 }} /> Review Reports
-          </li>
+        {(role === "professor" || role === "admin" || role === "faculty") && (
+          <>
+            <li onClick={() => navigate("/faculty/reports")}>
+              <FaClipboardCheck style={{ marginRight: 8 }} /> Review Reports
+            </li>
+            <li onClick={() => navigate("/faculty/applications")}>
+              <FaFileAlt style={{ marginRight: 8 }} /> Approve Applications
+            </li>
+          </>
         )}
         {role === "student" && (
           <>
@@ -63,7 +68,9 @@ export default function Sidebar({ role, onLogout }) {
             <li onClick={() => navigate("/practice-report")}>
               <FaFileAlt style={{ marginRight: 8 }} /> Practice Report
             </li>
-            <li><FaFileAlt style={{ marginRight: 8 }} /> My Applications</li>
+            <li onClick={() => navigate("/my-applications")}>
+              <FaFileAlt style={{ marginRight: 8 }} /> My Applications
+            </li>
           </>
         )}
         {role === "mentor" && <li><FaBuilding style={{ marginRight: 8 }} /> Mentor Dashboard</li>}

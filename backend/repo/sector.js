@@ -1,4 +1,4 @@
-import Sector from '../models/Sector';
+import Sector from '../models/Sector.js';
 
 class SectorRepository {
   async getAll() {
@@ -13,7 +13,7 @@ class SectorRepository {
     return await Sector.query().findOne({ sector_name: name });
   }
 
-  async create() {
+  async create(data) {
     return await Sector.query().insert(data).returning('*');
   }
 

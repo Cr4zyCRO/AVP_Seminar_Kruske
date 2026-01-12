@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from "axios";
-import { AlertCircle, CheckCircle2, Loader2, Upload } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, Upload, Building, ArrowLeft } from "lucide-react";
+import "./Dashboard.css";
 
 export default function ApplicationForm() {
   const { companyId } = useParams();
@@ -9,7 +10,6 @@ export default function ApplicationForm() {
 
   const [studentData, setStudentData] = useState({ name: "", email: "", study_program: "" });
   const [companyName, setCompanyName] = useState("");
-  const [formData, setFormData] = useState({ motivation: "", startDate: "", endDate: "", notes: "" });
   const [files, setFiles] = useState({ cv: null, motivationLetter: null });
   const [loading, setLoading] = useState(false);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -28,11 +28,11 @@ export default function ApplicationForm() {
         ]);
         
         setStudentData({
-          name: studentRes.data.full_name,
+          name: studentRes.data.full_name || `${studentRes.data.firstname} ${studentRes.data.lastname}`,
           email: studentRes.data.email,
-          study_program: studentRes.data.study_program
+          study_program: studentRes.data.study_program || studentRes.data.jmbag || ""
         });
-        setCompanyName(companyRes.data.name || "Company");
+        setCompanyName(companyRes.data.email || "Company");
       } catch (err) {
         setError("Error loading initial data.");
       } finally {
@@ -47,26 +47,27 @@ export default function ApplicationForm() {
     setLoading(true);
     setError("");
 
+    if (!files.cv || !files.motivationLetter) {
+      setError("Please upload both CV and Motivation Letter (PDF).");
+      setLoading(false);
+      return;
+    }
+
     const data = new FormData();
-    // Usklađeno s backendom (motivation_text, start_date, end_date)
     data.append("company_id", companyId);
     data.append("cv", files.cv);
     data.append("motivation_letter", files.motivationLetter);
-    data.append("motivation_text", formData.motivation); 
-    data.append("start_date", formData.startDate);
-    data.append("end_date", formData.endDate);
-    data.append("notes", formData.notes);
 
     try {
       const token = localStorage.getItem("token");
-      await axios.post("http://localhost:5000/users/applications", data, { // Provjeri je li prefiks /users/ ispravan u server.js
+      await axios.post("http://localhost:5000/applications", data, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data"
         }
       });
       setSuccess(true);
-      setTimeout(() => navigate("/dashboard"), 3000);
+      setTimeout(() => navigate("/my-applications"), 3000);
     } catch (err) {
       setError(err.response?.data?.message || err.response?.data?.error || "Error submitting application.");
     } finally {
@@ -74,86 +75,191 @@ export default function ApplicationForm() {
     }
   };
 
-  if (initialLoading) return <div className="p-10 text-center"><Loader2 className="animate-spin mx-auto" /></div>;
+  if (initialLoading) {
+    return (
+      <div className="content">
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "300px" }}>
+          <Loader2 className="animate-spin" size={40} style={{ color: "#3c6e71" }} />
+        </div>
+      </div>
+    );
+  }
 
-  if (success) return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-green-50 border border-green-200 rounded-lg text-center">
-      <CheckCircle2 className="mx-auto text-green-500 mb-4" size={48} />
-      <h2 className="text-2xl font-bold text-green-800">Application successful!</h2>
-      <p className="text-green-700 mt-2">You have successfully applied to {companyName}.</p>
-    </div>
-  );
+  if (success) {
+    return (
+      <div className="content">
+        <div style={{ 
+          maxWidth: "500px", 
+          margin: "2rem auto", 
+          padding: "2rem", 
+          backgroundColor: "#d4edda", 
+          border: "1px solid #c3e6cb", 
+          borderRadius: "12px", 
+          textAlign: "center" 
+        }}>
+          <CheckCircle2 size={48} style={{ color: "#28a745", marginBottom: "1rem" }} />
+          <h2 style={{ color: "#155724", marginBottom: "0.5rem" }}>Application Submitted!</h2>
+          <p style={{ color: "#155724" }}>You have successfully applied to {companyName}.</p>
+          <p style={{ color: "#6c757d", fontSize: "0.9rem", marginTop: "1rem" }}>Redirecting to My Applications...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-2xl mx-auto my-8 p-6 bg-white shadow-lg rounded-xl border border-gray-100">
-      <h1 className="text-2xl font-bold mb-4">Internship application for: {companyName}</h1>
-      
-      {error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded flex items-center"><AlertCircle className="mr-2"/>{error}</div>}
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="bg-gray-50 p-3 rounded">
-          <p className="text-sm text-gray-600 font-bold">{studentData.name} ({studentData.email})</p>
-          <p className="text-xs text-gray-500">{studentData.study_program}</p>
-        </div>
-
-        <textarea
-          placeholder="Your motivation..."
-          className="w-full p-2 border rounded h-32 focus:ring-2 focus:ring-blue-500 outline-none"
-          required
-          value={formData.motivation}
-          onChange={(e) => setFormData({...formData, motivation: e.target.value})}
-        />
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="text-xs text-gray-500 font-semibold uppercase">Start Date</label>
-            <input 
-              type="date" 
-              required 
-              className="w-full p-2 border rounded" 
-              onChange={(e) => setFormData({...formData, startDate: e.target.value})} 
-            />
-          </div>
-          <div>
-            <label className="text-xs text-gray-500 font-semibold uppercase">End Date</label>
-            <input 
-              type="date" 
-              required 
-              className="w-full p-2 border rounded" 
-              onChange={(e) => setFormData({...formData, endDate: e.target.value})} 
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className={`p-4 border-2 border-dashed rounded text-center transition-colors ${files.cv ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}>
-             <label className="cursor-pointer">
-                <Upload className={`mx-auto ${files.cv ? 'text-blue-500' : 'text-gray-400'}`} />
-                <span className="text-xs block mt-1 font-medium">CV (PDF)</span>
-                <input type="file" hidden accept=".pdf" required onChange={(e) => setFiles({...files, cv: e.target.files[0]})} />
-             </label>
-             {files.cv && <p className="text-[10px] text-blue-600 truncate mt-1">{files.cv.name}</p>}
-          </div>
-          <div className={`p-4 border-2 border-dashed rounded text-center transition-colors ${files.motivationLetter ? 'border-blue-500 bg-blue-50' : 'border-gray-300'}`}>
-             <label className="cursor-pointer">
-                <Upload className={`mx-auto ${files.motivationLetter ? 'text-blue-500' : 'text-gray-400'}`} />
-                <span className="text-xs block mt-1 font-medium">Cover Letter</span>
-                <input type="file" hidden accept=".pdf" required onChange={(e) => setFiles({...files, motivationLetter: e.target.files[0]})} />
-             </label>
-             {files.motivationLetter && <p className="text-[10px] text-blue-600 truncate mt-1">{files.motivationLetter.name}</p>}
-          </div>
-        </div>
-
+    <div className="content">
+      <div style={{ marginBottom: "1.5rem" }}>
         <button 
-          type="submit"
-          disabled={loading} 
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition-colors disabled:bg-gray-400 flex justify-center items-center"
+          onClick={() => navigate("/companies")}
+          style={{ 
+            display: "flex", 
+            alignItems: "center", 
+            gap: "0.5rem",
+            background: "none", 
+            border: "none", 
+            color: "#3c6e71", 
+            cursor: "pointer",
+            fontSize: "0.95rem",
+            padding: 0
+          }}
         >
-          {loading ? (
-            <><Loader2 className="animate-spin mr-2" size={20} /> Sending...</>
-          ) : "Submit Application"}
+          <ArrowLeft size={18} />
+          Back to Companies
         </button>
-      </form>
+      </div>
+
+      <div style={{ 
+        backgroundColor: "#fff", 
+        borderRadius: "12px", 
+        boxShadow: "0 2px 8px rgba(0,0,0,0.1)", 
+        padding: "2rem",
+        maxWidth: "600px"
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1.5rem" }}>
+          <Building size={28} style={{ color: "#3c6e71" }} />
+          <h1 style={{ margin: 0, fontSize: "1.5rem", color: "#1f2d3d" }}>Internship Application</h1>
+        </div>
+
+        <div style={{ 
+          backgroundColor: "#f8f9fa", 
+          padding: "1rem", 
+          borderRadius: "8px", 
+          marginBottom: "1.5rem",
+          borderLeft: "4px solid #3c6e71"
+        }}>
+          <p style={{ margin: 0, fontWeight: "600", color: "#1f2d3d" }}>Company: {companyName}</p>
+        </div>
+        
+        {error && (
+          <div style={{ 
+            marginBottom: "1rem", 
+            padding: "0.75rem 1rem", 
+            backgroundColor: "#f8d7da", 
+            color: "#721c24", 
+            borderRadius: "8px",
+            display: "flex",
+            alignItems: "center",
+            gap: "0.5rem"
+          }}>
+            <AlertCircle size={18} />
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit}>
+          <div style={{ 
+            backgroundColor: "#e9ecef", 
+            padding: "1rem", 
+            borderRadius: "8px", 
+            marginBottom: "1.5rem" 
+          }}>
+            <p style={{ margin: 0, fontWeight: "600", color: "#495057" }}>{studentData.name}</p>
+            <p style={{ margin: "0.25rem 0 0", fontSize: "0.9rem", color: "#6c757d" }}>{studentData.email}</p>
+            {studentData.study_program && (
+              <p style={{ margin: "0.25rem 0 0", fontSize: "0.85rem", color: "#6c757d" }}>{studentData.study_program}</p>
+            )}
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.5rem" }}>
+            <label style={{ 
+              padding: "1.5rem", 
+              border: `2px dashed ${files.cv ? '#3c6e71' : '#ced4da'}`,
+              borderRadius: "8px",
+              textAlign: "center",
+              cursor: "pointer",
+              backgroundColor: files.cv ? '#e8f4f5' : '#fff',
+              transition: "all 0.2s"
+            }}>
+              <Upload size={24} style={{ color: files.cv ? '#3c6e71' : '#adb5bd', marginBottom: "0.5rem" }} />
+              <span style={{ display: "block", fontWeight: "500", color: "#495057" }}>CV (PDF)</span>
+              <input 
+                type="file" 
+                hidden 
+                accept=".pdf" 
+                required 
+                onChange={(e) => setFiles({...files, cv: e.target.files[0]})} 
+              />
+              {files.cv && (
+                <span style={{ display: "block", fontSize: "0.75rem", color: "#3c6e71", marginTop: "0.5rem", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {files.cv.name}
+                </span>
+              )}
+            </label>
+
+            <label style={{ 
+              padding: "1.5rem", 
+              border: `2px dashed ${files.motivationLetter ? '#3c6e71' : '#ced4da'}`,
+              borderRadius: "8px",
+              textAlign: "center",
+              cursor: "pointer",
+              backgroundColor: files.motivationLetter ? '#e8f4f5' : '#fff',
+              transition: "all 0.2s"
+            }}>
+              <Upload size={24} style={{ color: files.motivationLetter ? '#3c6e71' : '#adb5bd', marginBottom: "0.5rem" }} />
+              <span style={{ display: "block", fontWeight: "500", color: "#495057" }}>Motivation Letter (PDF)</span>
+              <input 
+                type="file" 
+                hidden 
+                accept=".pdf" 
+                required 
+                onChange={(e) => setFiles({...files, motivationLetter: e.target.files[0]})} 
+              />
+              {files.motivationLetter && (
+                <span style={{ display: "block", fontSize: "0.75rem", color: "#3c6e71", marginTop: "0.5rem", overflow: "hidden", textOverflow: "ellipsis" }}>
+                  {files.motivationLetter.name}
+                </span>
+              )}
+            </label>
+          </div>
+
+          <button 
+            type="submit"
+            disabled={loading} 
+            style={{
+              width: "100%",
+              padding: "0.875rem",
+              backgroundColor: loading ? "#adb5bd" : "#3c6e71",
+              color: "#fff",
+              border: "none",
+              borderRadius: "8px",
+              fontSize: "1rem",
+              fontWeight: "600",
+              cursor: loading ? "not-allowed" : "pointer",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "0.5rem"
+            }}
+          >
+            {loading ? (
+              <>
+                <Loader2 className="animate-spin" size={20} />
+                Submitting...
+              </>
+            ) : "Submit Application"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

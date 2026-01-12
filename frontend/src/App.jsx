@@ -5,6 +5,8 @@ import LoginForm from "./components/LoginForm";
 import CompanyList from "./components/CompanyList"; 
 import CompanyDetails from "./components/CompanyDetails";
 import ApplicationForm from './components/ApplicationForm';
+import MyApplications from './components/MyApplications';
+import ApplicationApproval from './components/ApplicationApproval';
 import Dashboard from "./components/Dashboard";
 import AdminUsers from './components/AdminUsers';
 import Settings from './components/Settings';
@@ -162,6 +164,30 @@ function App() {
             user ? (
               <Layout user={user} onLogout={handleLogout}>
                 <Certificates user={user} onLogout={handleLogout}/>
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/my-applications"
+          element={
+            user && user.role === "student" ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <MyApplications />
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+        <Route
+          path="/faculty/applications"
+          element={
+            user && (user.role === "faculty" || user.role === "professor" || user.role === "admin") ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <ApplicationApproval />
               </Layout>
             ) : (
               <Navigate to="/login" />

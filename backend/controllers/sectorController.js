@@ -1,5 +1,4 @@
-import { EMPTY } from 'sqlite3';
-import SectorRepository from '../repo/sector';
+import SectorRepository from '../repo/sector.js';
 
 
 class sectorController {

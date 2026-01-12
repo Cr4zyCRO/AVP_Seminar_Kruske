@@ -9,7 +9,7 @@ import db from "../DB_config/knex.js";
  * @param {string} params.sortBy - polje za sortiranje 
  * @returns {Promise<{data: Array, total: number, page: number, limit: number, totalPages: number}>}
  */
-export async function getActiveCompanies({ page = 1, limit = 10, sortBy, address, city, search }) {
+export async function getActiveCompanies({ page = 1, limit = 10, sortBy, address, city, search, sectorId }) {
     const pageNum = parseInt(page, 10) || 1;
     const limitNum = parseInt(limit, 10) || 10;
     const offset = (pageNum - 1) * limitNum;
@@ -26,9 +26,14 @@ export async function getActiveCompanies({ page = 1, limit = 10, sortBy, address
         query = query.where('city', 'like', `%${city}%`);
     }
 
-    // pretraga po imenu
+    // pretraga po email-u (company nema name polje)
     if (search) {
-        query = query.where('name', 'like', `%${search}%`);
+        query = query.where('email', 'like', `%${search}%`);
+    }
+
+    // filtriranje po sektoru
+    if (sectorId) {
+        query = query.where('sector_id', sectorId);
     }
 
     // sortiranje
@@ -39,7 +44,14 @@ export async function getActiveCompanies({ page = 1, limit = 10, sortBy, address
     }
 
     // dohvati ukupni broj
-    const totalResult = await db('company').count('* as count').first();
+    let countQuery = db('company').count('* as count');
+    if (search) {
+        countQuery = countQuery.where('email', 'like', `%${search}%`);
+    }
+    if (sectorId) {
+        countQuery = countQuery.where('sector_id', sectorId);
+    }
+    const totalResult = await countQuery.first();
     const total = totalResult.count;
 
     // primijeni paginaciju

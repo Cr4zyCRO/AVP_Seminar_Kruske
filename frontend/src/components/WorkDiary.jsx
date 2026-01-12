@@ -44,7 +44,7 @@ export default function WorkDiary() {
 
   const fetchApplications = useCallback(async () => {
     try {
-      const res = await axios.get(`${API_URL}/users/my-applications`, {
+      const res = await axios.get(`${API_URL}/applications/my-applications`, {
         headers: getAuthHeaders()
       });
       const approved = (res.data || []).filter(app => app.status === 'approved');

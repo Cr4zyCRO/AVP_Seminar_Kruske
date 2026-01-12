@@ -8,23 +8,21 @@ import { query, params } from "../middleware/validate.js";         // Middleware
 
 const router = express.Router();
 
-// joi schema za validaciju query parametara (paginacija, sortiranje)
 const getCompaniesSchema = {
-   
     page: Joi.number().integer().min(1).default(1),
-    
     limit: Joi.number().integer().min(1).max(100).default(10),
-    
-    sortBy: Joi.string().valid('name').default('name'), 
+    sortBy: Joi.string().valid('name').default('name'),
+    search: Joi.string().allow('').optional(),
+    sectorId: Joi.string().guid({ version: 'uuidv4' }).optional().allow(''),
 };
 
-// joi schema za validaciju ID parametra (GET /companies/{id})
+
 const getCompanyParamsSchema = {
     // ID mora biti ispravan UUID
     id: Joi.string().guid({ version: 'uuidv4' }).required(), 
 };
 
-// GET /companies?page=1&limit=10&sortBy=name
+
 // Endpoint za dohvat paginirane liste aktivnih kompanija
 router.get(
     "/", 
@@ -33,10 +31,10 @@ router.get(
     async (req, res) => {
         try {
             // parametri su vec validirani i postavljeni na defaultne vrijednosti
-            const { page, limit, sortBy } = req.query;
+            const { page, limit, sortBy, search, sectorId } = req.query;
 
             // dohvat podataka iz repo
-            const result = await getActiveCompanies({ page, limit, sortBy });
+            const result = await getActiveCompanies({ page, limit, sortBy, search, sectorId });
             
             // slanje paginiranog rezultata
             res.json(result);

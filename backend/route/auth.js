@@ -5,8 +5,33 @@ import { body } from "../middleware/validate.js";
 import redisClient from "../config/redisClient.js";
 import { jwtCheck } from "../middleware/authMiddleware.js";
 import jwt from "jsonwebtoken";
+import db from "../DB_config/knex.js";
 
 const router = express.Router();
+
+// GET /auth/me - Get current logged in user info
+router.get("/me", jwtCheck, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    
+    const user = await db('user')
+      .select('id', 'email', 'firstname', 'lastname', 'role', 'jmbag')
+      .where('id', userId)
+      .first();
+    
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    
+
+    user.full_name = `${user.firstname || ''} ${user.lastname || ''}`.trim();
+    
+    res.json(user);
+  } catch (err) {
+    console.error("Error fetching user:", err);
+    res.status(500).json({ error: "Failed to fetch user data" });
+  }
+});
 
 router.post(
   "/login",

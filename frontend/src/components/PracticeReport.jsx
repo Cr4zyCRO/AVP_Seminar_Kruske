@@ -42,7 +42,7 @@ export default function PracticeReport() {
 
   const fetchApplications = useCallback(async () => {
     try {
-      const res = await axios.get(`${API_URL}/users/my-applications`, {
+      const res = await axios.get(`${API_URL}/applications/my-applications`, {
         headers: getAuthHeaders()
       });
       setApplications(res.data || []);

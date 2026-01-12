@@ -12,6 +12,8 @@ import companiesRouter from './route/companies.js';
 import practiceReportRouter from './route/practiceReport.js';
 import certificatesRouter from './route/certificates.js';
 import workDiaryRouter from './route/workDiaryRoutes.js';
+import applicationsRouter from './route/aplication.js';
+import sectorRouter from './route/sector.js';
 import { Model } from 'objection';
 import db from './DB_config/knex.js';
 
@@ -59,6 +61,8 @@ app.use('/companies', companiesRouter);
 app.use('/practice-reports', practiceReportRouter);
 app.use('/certificates', certificatesRouter);
 app.use('/work-diary', workDiaryRouter);
+app.use('/applications', applicationsRouter);
+app.use('/sectors', sectorRouter);
 
 const PORT = process.env.PORT || 5000; //process.env je npr. komanda: PORT=3000 node server.js
 app.listen(PORT, () => console.log('Server running on port ' + PORT));
