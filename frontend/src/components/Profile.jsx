@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 
 
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5001";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 export default function Profile() {
   const [profile, setProfile] = useState(null);
@@ -19,7 +19,7 @@ export default function Profile() {
         });
         setProfile(res.data);
       } catch (err) {
-        setError(err.response?.data?.error || "Greška pri učitavanju podataka profila");
+        setError(err.response?.data?.error || "Error while loading profile");
       } finally {
         setLoading(false);
       }
@@ -28,12 +28,12 @@ export default function Profile() {
     if (token) {
       fetchProfile();
     } else {
-      setError("Token nije pronađen, molimo prijavite se.");
+      setError("token not found, please log in.");
       setLoading(false);
     }
   }, [token]);
 
-  if (loading) return <div style={{ textAlign: 'center', padding: '20px' }}>Učitavanje profila...</div>;
+  if (loading) return <div style={{ textAlign: 'center', padding: '20px' }}>Loading prifile...</div>;
   if (error) return <div style={{ color: 'red', textAlign: 'center', padding: '20px' }}>{error}</div>;
 
   return (
