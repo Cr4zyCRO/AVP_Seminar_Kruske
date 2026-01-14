@@ -20,7 +20,7 @@ export default function CompanyForm() {
     address: "",
     city: "",
     owner_id: "",
-    sector_id: ""
+    sector_id: "",
   });
 
   const headers = { Authorization: `Bearer ${token}` };
@@ -28,13 +28,15 @@ export default function CompanyForm() {
   // Fetch companies, mentors and sectors
   useEffect(() => {
     fetchCompanies();
-    axios.get(`${API}/users/mentors`, { headers })
-      .then(res => setMentors(res.data))
-      .catch(err => console.error("Failed to fetch mentors", err));
+    axios
+      .get(`${API}/users/mentors`, { headers })
+      .then((res) => setMentors(res.data))
+      .catch((err) => console.error("Failed to fetch mentors", err));
 
-    axios.get(`${API}/sectors`, { headers })
-      .then(res => setSectors(res.data))
-      .catch(err => console.error("Failed to fetch sectors", err));
+    axios
+      .get(`${API}/sectors`, { headers })
+      .then((res) => setSectors(res.data))
+      .catch((err) => console.error("Failed to fetch sectors", err));
   }, []);
 
   const fetchCompanies = async () => {
@@ -54,19 +56,19 @@ export default function CompanyForm() {
       address: "",
       city: "",
       owner_id: "",
-      sector_id: ""
+      sector_id: "",
     });
     setShowModal(true);
   };
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     setError(null);
     e.preventDefault();
     try {
       if (!form.owner_id || !form.sector_id) {
-    setError("Owner and Sector are required!");
-    return;
-  }
+        setError("Owner and Sector are required!");
+        return;
+      }
       if (editing) {
         await axios.put(`${API}/companies/${editing.id}`, form, { headers });
       } else {
@@ -79,17 +81,18 @@ export default function CompanyForm() {
     }
   };
 
-  const handleInputChange = e => {
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
     <div className="admin-users-container">
-
       <div className="admin-users-header">
         <h2>Company Management</h2>
-        <button className="btn-create" onClick={openCreate}>+ New Company</button>
+        <button className="btn-create" onClick={openCreate}>
+          + New Company
+        </button>
       </div>
 
       <table className="users-table">
@@ -104,15 +107,34 @@ export default function CompanyForm() {
           </tr>
         </thead>
         <tbody>
-          {companies.map(c => (
+          {companies.map((c) => (
             <tr key={c.id}>
               <td>{c.company_oib}</td>
               <td>{c.email}</td>
               <td>{c.city}</td>
-              <td>{c.owner_id}</td>
-              <td>{c.sector_id}</td>
               <td>
-                <button className="btn-edit" onClick={() => { setEditing(c); setForm(c); setShowModal(true); }}>Edit</button>
+                {(() => {
+                  const owner = mentors.find((m) => m?.id === c.owner_id);
+                  return owner
+                    ? `${owner.firstname} ${owner.lastname}`
+                    : c.owner_id;
+                })()}
+              </td>
+              <td>
+                {sectors.find((f) => f?.id == c.sector_id)?.sector_name ||
+                  c.sector_id}
+              </td>
+              <td>
+                <button
+                  className="btn-edit"
+                  onClick={() => {
+                    setEditing(c);
+                    setForm(c);
+                    setShowModal(true);
+                  }}
+                >
+                  Edit
+                </button>
               </td>
             </tr>
           ))}
@@ -121,7 +143,7 @@ export default function CompanyForm() {
 
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h3>{editing ? "Edit Company" : "New Company"}</h3>
             <span>{error && <div className="error-message">{error}</div>}</span>
 
@@ -129,12 +151,12 @@ export default function CompanyForm() {
               <div className="form-row">
                 <div className="form-group">
                   <label>OIB</label>
-                  <input 
-                    type="text" 
-                    name="company_oib" 
-                    value={form.company_oib} 
-                    onChange={handleInputChange} 
-                    required 
+                  <input
+                    type="text"
+                    name="company_oib"
+                    value={form.company_oib}
+                    onChange={handleInputChange}
+                    required
                     maxLength="11"
                     pattern="\d{11}"
                     title="OIB must be 11 digits"
@@ -142,12 +164,12 @@ export default function CompanyForm() {
                 </div>
                 <div className="form-group">
                   <label>Email</label>
-                  <input 
-                    type="email" 
-                    name="email" 
-                    value={form.email} 
-                    onChange={handleInputChange} 
-                    required 
+                  <input
+                    type="email"
+                    name="email"
+                    value={form.email}
+                    onChange={handleInputChange}
+                    required
                   />
                 </div>
               </div>
@@ -155,22 +177,22 @@ export default function CompanyForm() {
               <div className="form-row">
                 <div className="form-group">
                   <label>Address</label>
-                  <input 
-                    type="text" 
-                    name="address" 
-                    value={form.address} 
-                    onChange={handleInputChange} 
-                    required 
+                  <input
+                    type="text"
+                    name="address"
+                    value={form.address}
+                    onChange={handleInputChange}
+                    required
                   />
                 </div>
                 <div className="form-group">
                   <label>City</label>
-                  <input 
-                    type="text" 
-                    name="city" 
-                    value={form.city} 
-                    onChange={handleInputChange} 
-                    required 
+                  <input
+                    type="text"
+                    name="city"
+                    value={form.city}
+                    onChange={handleInputChange}
+                    required
                   />
                 </div>
               </div>
@@ -178,14 +200,14 @@ export default function CompanyForm() {
               <div className="form-row">
                 <div className="form-group">
                   <label>Owner (Mentor)</label>
-                  <select 
-                    name="owner_id" 
-                    value={form.owner_id} 
-                    onChange={handleInputChange} 
+                  <select
+                    name="owner_id"
+                    value={form.owner_id}
+                    onChange={handleInputChange}
                     required
                   >
                     <option value="">Select Mentor Owner</option>
-                    {mentors.map(m => (
+                    {mentors.map((m) => (
                       <option key={m.id} value={m.id}>
                         {m.firstname} {m.lastname} ({m.email})
                       </option>
@@ -194,29 +216,41 @@ export default function CompanyForm() {
                 </div>
                 <div className="form-group">
                   <label>Sector</label>
-                  <select 
-                    name="sector_id" 
-                    value={form.sector_id} 
-                    onChange={handleInputChange} 
+                  <select
+                    name="sector_id"
+                    value={form.sector_id}
+                    onChange={handleInputChange}
                     required
                   >
                     <option value="">Select Sector</option>
-                    {sectors.map(s => (
-                      <option key={s.id} value={s.id}>{s.sector_name}</option>
+                    {sectors.map((s) => (
+                      <option key={s.id} value={s.id}>
+                        {s.sector_name}
+                      </option>
                     ))}
                   </select>
                 </div>
               </div>
 
               <div className="modal-actions">
-                <button type="button" className="btn-cancel" onClick={() => {setShowModal(false); setError(null);}}>Cancel</button>
-                <button type="submit" className="btn-save">{editing ? "Save" : "Create"}</button>
+                <button
+                  type="button"
+                  className="btn-cancel"
+                  onClick={() => {
+                    setShowModal(false);
+                    setError(null);
+                  }}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn-save">
+                  {editing ? "Save" : "Create"}
+                </button>
               </div>
             </form>
           </div>
         </div>
       )}
-
     </div>
   );
 }
