@@ -6,7 +6,7 @@ import { development, staging } from './knexfile.mjs';
 
 // za migraciju pokrenite ovaj file ili priko "node runMigrationAndSeed.js" ili npm run start:migration
 
-const knex = Knex(development);
+const knex = Knex(staging);
 
 async function runLatestMigration() {
   try {

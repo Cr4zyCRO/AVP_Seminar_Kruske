@@ -1,27 +1,33 @@
-import  User from "../models/User.js";
+import User from "../models/User.js";
 
 class UserRepository {
-    async getAllUsers() {
-      return User.query();
-    }
+  async getAllUsers() {
+    return User.query();
+  }
 
-    async getUserById(id) {
-      return User.query().findById(id);
-    }
+  async getUserById(id) {
+    return User.query().findById(id);
+  }
 
-    async createUser(userData) {
-      return User.query().insert(userData);
-    }
+  async getMentors() {
+    return User.query()
+      .where("role", "mentor")
+      .select("id", "firstname", "lastname", "email");
+  }
 
-    async updateUser(id, userData) {
-      return User.query().patchAndFetchById(id, userData);
-    }
+  async createUser(userData) {
+    return User.query().insert(userData);
+  }
 
-    async deleteUser(id) {
-      return User.query().deleteById(id);
-    }
+  async updateUser(id, userData) {
+    return User.query().patchAndFetchById(id, userData);
+  }
 
-    async getUserByEmail(email) {
+  async deleteUser(id) {
+    return User.query().deleteById(id);
+  }
+
+  async getUserByEmail(email) {
     return User.query().findOne({ email });
   }
 

@@ -16,7 +16,7 @@ const validate = (section) => (objSchema) => {
   };
 };
 
-export const body = validate("body");
+export const body = validate("req.body");
 export const params = validate("params");
 export const query = validate("query");
 

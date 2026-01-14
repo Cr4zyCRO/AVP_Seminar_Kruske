@@ -1,5 +1,5 @@
-import UserRepository from '../repo/users.js';
-import bcrypt from 'bcrypt';
+import UserRepository from "../repo/users.js";
+import bcrypt from "bcrypt";
 
 class UsersController {
   async getAllUsers(req, res) {
@@ -25,6 +25,16 @@ class UsersController {
     }
   }
 
+  async getMentors(req, res) {
+    try {
+      const mentors = await UserRepository.getMentors();
+      res.json(mentors);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: "Failed to fetch mentors" });
+    }
+  }
+
   async createUser(req, res) {
     try {
       const newUser = await UserRepository.createUser(req.body);
@@ -38,7 +48,10 @@ class UsersController {
 
   async updateUser(req, res) {
     try {
-      const updatedUser = await UserRepository.updateUser(req.params.id, req.body);
+      const updatedUser = await UserRepository.updateUser(
+        req.params.id,
+        req.body
+      );
       if (!updatedUser) {
         return res.status(404).json({ error: "User not found" });
       }
@@ -78,20 +91,26 @@ class UsersController {
   async updateMe(req, res) {
     try {
       const { currentPassword, newPassword } = req.body;
-      
-      if (!currentPassword) return res.status(400).json({ error: "Current password is required" });
-      if (!newPassword) return res.status(400).json({ error: "New password is required" });
-      
+
+      if (!currentPassword)
+        return res.status(400).json({ error: "Current password is required" });
+      if (!newPassword)
+        return res.status(400).json({ error: "New password is required" });
+
       const user = await UserRepository.getUserById(req.user.id);
       if (!user) return res.status(404).json({ error: "User not found" });
-      
+
       const isValid = await bcrypt.compare(currentPassword, user.password);
-      if (!isValid) return res.status(401).json({ error: "Current password is incorrect" });
-      
+      if (!isValid)
+        return res.status(401).json({ error: "Current password is incorrect" });
+
       // Updatepassword
-      const updatedUser = await UserRepository.updateUser(req.user.id, { password: newPassword });
-      if (!updatedUser) return res.status(404).json({ error: "User not found" });
-      
+      const updatedUser = await UserRepository.updateUser(req.user.id, {
+        password: newPassword,
+      });
+      if (!updatedUser)
+        return res.status(404).json({ error: "User not found" });
+
       res.json({ message: "Password updated successfully" });
     } catch (err) {
       console.error(err);
