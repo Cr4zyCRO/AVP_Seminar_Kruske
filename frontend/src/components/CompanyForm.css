@@ -1,0 +1,45 @@
+.company-form-card {
+  max-width: 500px;
+  background: white;
+  padding: 2rem;
+  border-radius: 14px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+}
+
+.company-form-card h2 {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.company-form-card input,
+.company-form-card select {
+  width: 100%;
+  margin-bottom: 1rem;
+  padding: .75rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.company-form-card button {
+  width: 100%;
+  background: #3c6e71;
+  border: none;
+  color: white;
+  padding: .8rem;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.company-form-card button:hover {
+  opacity: .9;
+}
+
+.form-msg {
+  margin-bottom: 1rem;
+  background: #e7f7ec;
+  color: #2d7a3e;
+  padding: .6rem;
+  border-radius: 6px;
+}

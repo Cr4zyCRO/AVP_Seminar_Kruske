@@ -1,4 +1,5 @@
 import db from "../DB_config/knex.js";
+import Company from "../models/Company.js";
 
 /**
  * Dohvaca paginiranu listu kompanija.
@@ -77,4 +78,24 @@ export async function getCompanyById(id) {
         .first();
 
     return company || null;
+}
+
+/**
+ * Kreira novu kompaniju u bazi
+ * @param {object} data - objekt sa podacima kompanije
+ */
+export async function createCompany(data) {
+  const company = await Company.query().insert(data);
+  return company;
+
+}
+
+/**
+ * Ažurira postojeću kompaniju
+ * @param {string} id - UUID kompanije
+ * @param {object} data - podaci za update
+ */
+export async function updateCompany(id, data) {
+    const company = await Company.query().patchAndFetchById(id, data);
+    return company;
 }

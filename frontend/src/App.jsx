@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Layout from "./components/Layout";
 import LoginForm from "./components/LoginForm";
-import CompanyList from "./components/CompanyList"; 
+import CompanyList from "./components/CompanyList";
 import CompanyDetails from "./components/CompanyDetails";
-import ApplicationForm from './components/ApplicationForm';
-import MyApplications from './components/MyApplications';
-import ApplicationApproval from './components/ApplicationApproval';
+import ApplicationForm from "./components/ApplicationForm";
+import MyApplications from "./components/MyApplications";
+import ApplicationApproval from "./components/ApplicationApproval";
 import Dashboard from "./components/Dashboard";
-import AdminUsers from './components/AdminUsers';
-import Settings from './components/Settings';
-import PracticeReport from './components/PracticeReport';
-import FacultyReportReview from './components/FacultyReportReview';
+import AdminUsers from "./components/AdminUsers";
+import Settings from "./components/Settings";
+import PracticeReport from "./components/PracticeReport";
+import FacultyReportReview from "./components/FacultyReportReview";
 import Certificates from "./components/Certificates";
 import WorkDiary from "./components/WorkDiary";
 
 import Profile from "./components/Profile";
+import CompanyForm from "./components/CompanyForm";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -45,17 +51,23 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element= {<Navigate to="/login" replace/>}/>
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route
           path="/login"
-          element={user ? <Navigate to="/dashboard" /> : <LoginForm setUser={setUser} />}
+          element={
+            user ? (
+              <Navigate to="/dashboard" />
+            ) : (
+              <LoginForm setUser={setUser} />
+            )
+          }
         />
         <Route
           path="/dashboard"
           element={
             user ? (
               <Layout user={user} onLogout={handleLogout}>
-                <Dashboard user={user} onLogout={handleLogout}/>
+                <Dashboard user={user} onLogout={handleLogout} />
               </Layout>
             ) : (
               <Navigate to="/login" />
@@ -74,8 +86,8 @@ function App() {
             )
           }
         />
-        <Route 
-          path="/admin/users" 
+        <Route
+          path="/admin/users"
           element={
             user && user.role === "admin" ? (
               <Layout user={user} onLogout={handleLogout}>
@@ -86,6 +98,19 @@ function App() {
             )
           }
         />
+        <Route
+          path="/admin/company"
+          element={
+            user && user.role === "admin" ? (
+              <Layout user={user} onLogout={handleLogout}>
+                <CompanyForm />
+              </Layout>
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
         <Route
           path="/settings"
           element={
@@ -98,8 +123,8 @@ function App() {
             )
           }
         />
-        <Route 
-          path="/apply/:companyId" 
+        <Route
+          path="/apply/:companyId"
           element={
             user ? (
               <Layout user={user} onLogout={handleLogout}>
@@ -163,7 +188,7 @@ function App() {
           element={
             user ? (
               <Layout user={user} onLogout={handleLogout}>
-                <Certificates user={user} onLogout={handleLogout}/>
+                <Certificates user={user} onLogout={handleLogout} />
               </Layout>
             ) : (
               <Navigate to="/login" />
@@ -185,7 +210,10 @@ function App() {
         <Route
           path="/faculty/applications"
           element={
-            user && (user.role === "faculty" || user.role === "professor" || user.role === "admin") ? (
+            user &&
+            (user.role === "faculty" ||
+              user.role === "professor" ||
+              user.role === "admin") ? (
               <Layout user={user} onLogout={handleLogout}>
                 <ApplicationApproval />
               </Layout>
@@ -206,7 +234,6 @@ function App() {
             )
           }
         />
-
       </Routes>
     </Router>
   );

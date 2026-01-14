@@ -12,6 +12,7 @@ import {
   FaClipboardCheck,
   FaList,
   FaBook,
+  FaAddressBook,
 } from "react-icons/fa";
 
 const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
@@ -25,11 +26,9 @@ export default function Sidebar({ role, onLogout }) {
 
     if (token) {
       try {
-        await axios.post(
-          `${API_URL}/auth/logout`,
-          null,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        await axios.post(`${API_URL}/auth/logout`, null, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
       } catch (err) {
         console.error("Logout error:", err);
       }
@@ -43,12 +42,19 @@ export default function Sidebar({ role, onLogout }) {
     <div className="sidebar">
       <h3>Menu</h3>
       <ul>
-        <li onClick={() => navigate("/dashboard")}><FaHome style={{ marginRight: 8 }} /> Home</li>
+        <li onClick={() => navigate("/dashboard")}>
+          <FaHome style={{ marginRight: 8 }} /> Home
+        </li>
 
         {role === "admin" && (
-          <li onClick={() => navigate("/admin/users")}>
-            <FaUsers style={{ marginRight: 8 }} /> User Management
-          </li>
+          <>
+            <li onClick={() => navigate("/admin/users")}>
+              <FaUsers style={{ marginRight: 8 }} /> User Management
+            </li>
+            <li onClick={() => navigate("/admin/company")}>
+              <FaAddressBook /> Company Management
+            </li>
+          </>
         )}
         {(role === "professor" || role === "admin" || role === "faculty") && (
           <>
@@ -73,11 +79,21 @@ export default function Sidebar({ role, onLogout }) {
             </li>
           </>
         )}
-        {role === "mentor" && <li><FaBuilding style={{ marginRight: 8 }} /> Mentor Dashboard</li>}
+        {role === "mentor" && (
+          <li>
+            <FaBuilding style={{ marginRight: 8 }} /> Mentor Dashboard
+          </li>
+        )}
 
-        <li onClick={() => navigate('/profile')}><FaUser style={{ marginRight: 8 }} /> Profile</li>
-        <li onClick={() => navigate('/certificates')}><FaList style={{ marginRight: 8 }} /> Certificates</li>
-        <li onClick={() => navigate('/settings')}><FaCog style={{ marginRight: 8 }} /> Settings</li>
+        <li onClick={() => navigate("/profile")}>
+          <FaUser style={{ marginRight: 8 }} /> Profile
+        </li>
+        <li onClick={() => navigate("/certificates")}>
+          <FaList style={{ marginRight: 8 }} /> Certificates
+        </li>
+        <li onClick={() => navigate("/settings")}>
+          <FaCog style={{ marginRight: 8 }} /> Settings
+        </li>
 
         <li
           onClick={handleLogout}
@@ -88,4 +104,4 @@ export default function Sidebar({ role, onLogout }) {
       </ul>
     </div>
   );
-} 
+}

@@ -8,9 +8,11 @@ router.get("/me", jwtCheck, UsersController.getMe);
 router.put("/me", jwtCheck, UsersController.updateMe);
 
 router.get("/", jwtCheck, authorizeAdmin, UsersController.getAllUsers);
+router.get("/mentors", jwtCheck, authorizeAdmin, UsersController.getMentors);
 router.get("/:id", jwtCheck, authorizeAdmin, UsersController.getUserById);
 router.post("/", jwtCheck, authorizeAdmin, UsersController.createUser);
 router.put("/:id", jwtCheck, authorizeAdmin, UsersController.updateUser);
 router.delete("/:id", jwtCheck, authorizeAdmin, UsersController.deleteUser);
+
 
 export default router;

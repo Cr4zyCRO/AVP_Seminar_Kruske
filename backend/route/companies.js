@@ -1,11 +1,9 @@
-
-
 import express from "express";
 import Joi from "joi";
-import { getActiveCompanies, getCompanyById } from "../repo/companies.js";
-import { jwtCheck } from "../middleware/authMiddleware.js"; // Middleware za provjeru JWT-a
-import { query, params } from "../middleware/validate.js";         // Middleware za Joi validaciju
-
+import { getActiveCompanies, getCompanyById, createCompany, updateCompany } from "../repo/companies.js";
+import { jwtCheck, authorizeAdmin } from "../middleware/authMiddleware.js"; // Middleware za provjeru JWT-a
+import { query, params, body } from "../middleware/validate.js";         // Middleware za Joi validaciju
+import { createCompanySchema, updateCompanySchema } from "../middleware/validation/companyValidator.js";
 const router = express.Router();
 
 const getCompaniesSchema = {
@@ -73,6 +71,44 @@ router.get(
             res.status(500).json({ error: "Failed to fetch company details" });
         }
     }
+);
+
+
+// Endpoint za kreiranje nove kompanije
+router.post(
+  "/",                   // PUT ili POST na /companies
+  jwtCheck,              // samo prijavljeni korisnici
+  authorizeAdmin,        // samo admin
+  body(createCompanySchema), // Joi validacija
+  async (req, res) => {
+    try {
+      const company = await createCompany(req.body);
+      res.status(201).json(company);
+    } catch (err) {
+      console.error("Error creating company:", err.message);
+      res.status(500).json({ error: "Failed to create company" });
+    }
+  }
+);
+
+router.put(
+  "/:id",
+  jwtCheck,
+  authorizeAdmin,
+  body(updateCompanySchema),
+  async (req, res) => {
+    try {
+      console.log(req.body);
+      const company = await updateCompany(req.params.id, req.body);
+      if (!company) {
+        return res.status(404).json({ error: `Company with ID ${req.params.id} not found.` });
+      }
+      res.json(company);
+    } catch (err) {
+      console.error(`Error updating company with ID ${req.params.id}:`, err.message);
+      res.status(500).json({ error: "Failed to update company"});
+    }
+  }
 );
 
 
