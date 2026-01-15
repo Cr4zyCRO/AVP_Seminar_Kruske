@@ -7,6 +7,34 @@ import { jwtCheck } from "../middleware/authMiddleware.js";
 import jwt from "jsonwebtoken";
 import db from "../DB_config/knex.js";
 
+/**
+ * AUTH / SESSION FLOW
+ *
+ * - Autentikacija se temelji na JWT tokenima (stateless backend)
+ *
+ * LOGIN:
+ * - POST /auth/login
+ * - Ako su kredencijali ispravni → vraća se JWT token
+ * - Klijent sprema token i šalje ga u Authorization headeru
+ *
+ * AUTHENTICATED REQUESTS:
+ * - Authorization: Bearer <token>
+ * - jwtCheck middleware:
+ *   - provjerava potpis i istek tokena
+ *   - provjerava je li token blacklistan u Redis-u
+ * - Ako je validan → req.user je dostupan
+ *
+ * CURRENT USER:
+ * - GET /auth/me
+ * - Vraća podatke trenutno prijavljenog korisnika iz baze
+ *
+ * LOGOUT:
+ * - POST /auth/logout
+ * - Token se sprema u Redis blacklist do isteka (exp)
+ * - Svaki sljedeći request s tim tokenom se odbija
+ */
+
+
 const router = express.Router();
 
 // GET /auth/me - Get current logged in user info
